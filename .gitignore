@@ -1,0 +1,4 @@
+*.csv
+*.jpeg
+__pycache__
+2025*
