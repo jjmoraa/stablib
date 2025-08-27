@@ -20,23 +20,25 @@ def a(mass_matrix_3d, stiffness_matrix_3d, damping_matrix_3d):
         mass_matrix = mass_matrix_3d[t]
         stiffness_matrix = stiffness_matrix_3d[t]
         damping_matrix = damping_matrix_3d[t]
-        # print("please print")
-        # print(f"mass_inv shape: {mass_matrix.shape}")
-        # print("please print")
-        # print(f"stiffness_matrix: {stiffness_matrix}")
-        # print("please print")
-        # print(f"damping_matrix shape: {damping_matrix.shape}")
-        # Check if the mass matrix is invertible
+
+        # Check if the mass matrix is invertible (optional, can be omitted for performance)
         if np.linalg.det(mass_matrix) == 0:
             raise ValueError(f"Mass matrix at time index {t} is singular and cannot be inverted.")
 
-        # Compute the inverse of the mass matrix
-        mass_inv = np.linalg.inv(mass_matrix)
+        # Compute the inverse of the mass matrix (original approach)
+        # mass_inv = np.linalg.inv(mass_matrix)
+        # a_matrix_3d[t] = np.block([
+        #     [np.zeros_like(mass_matrix), np.eye(matrix_size)],
+        #     [-mass_inv @ stiffness_matrix, -mass_inv @ damping_matrix]
+        # ])
 
-        # Construct A(t) for this time step
+        # Directly solve for mass^{-1} * stiffness and mass^{-1} * damping
+        minus_massinv_stiffness = -np.linalg.solve(mass_matrix, stiffness_matrix)
+        minus_massinv_damping = -np.linalg.solve(mass_matrix, damping_matrix)
+
         a_matrix_3d[t] = np.block([
             [np.zeros_like(mass_matrix), np.eye(matrix_size)],
-            [-mass_inv @ stiffness_matrix, -mass_inv @ damping_matrix]
+            [minus_massinv_stiffness, minus_massinv_damping]
         ])
 
     return a_matrix_3d

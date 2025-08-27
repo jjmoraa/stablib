@@ -20,8 +20,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import logm, expm
 # Locals
-from ronnie import mass, damping, stiffness
-import welib.essentials
+from stablib.models.model5DOFs import mass, damping, stiffness
 from state_space import A_fromMCK, solve_ode_At_flat
 from floquet import compute_q, compute_y, compute_x, compute_B
 from a_matrix import a

@@ -7,7 +7,7 @@ from scipy.linalg import logm, expm
 from stablib.state_space import A_fromMCK
 from stablib.floquet import  solve, test_periodic
 from stablib.modeProjection import mode_projection
-from stablib.ronnie import mass, damping, stiffness
+from examples.ronnie import mass, damping, stiffness
 
 # Define time period
 period=2*np.pi

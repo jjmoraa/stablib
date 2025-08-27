@@ -36,9 +36,16 @@ def solve_ode_At_flat(At, x0, t_values):
 
 
 def A_fromMCK(M, C, K):
-    mass_inv = np.linalg.inv(M)
-    
+    # Original approach with explicit inversion:
+    # mass_inv = np.linalg.inv(M)
+    # return np.block([
+    #     [np.zeros_like(M), np.eye(M.shape[0])],
+    #     [-mass_inv @ K, -mass_inv @ C]])
+
+    # Direct solve approach (preferred):
+    minus_massinv_K = -np.linalg.solve(M, K)
+    minus_massinv_C = -np.linalg.solve(M, C)
     return np.block([
         [np.zeros_like(M), np.eye(M.shape[0])],
-        [-mass_inv @ K, -mass_inv @ C]])
+        [minus_massinv_K, minus_massinv_C]])
 

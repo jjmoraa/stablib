@@ -1,16 +1,15 @@
 import numpy as np
 from scipy.linalg import logm, expm
-from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 # Local
 from stablib.state_space import solve_ode_At_flat
-from stablib.modeProjection import mode_projection
 from stablib.PostProcessing import plot_matrix
+from stablib.tictoc import Timer
 
 def compute_B(C,period):
 
-    problem_size = int(np.sqrt(C.shape[0]))
-    print('proble size B', problem_size)
+    #problem_size = int(np.sqrt(C.shape[0]))
+    #print('problem size B', problem_size)
     # C = sol.y[:, -1].reshape(problem_size,problem_size)
     # df =pd.DataFrame(Mon)
     # df.to_csv('monodromy_matrix_{omega}.csv', index=False)
@@ -20,50 +19,60 @@ def compute_B(C,period):
     B = logm(C) / period
     return B
 
-def compute_q(size, sol, B, t_values, method='manual'):
+def compute_q(sol, B, t_values, method='forloop'):
     """
     Computes the Floquet transformation matrix Q(t).
 
     Parameters:
-    - size (int): Dimension of the square matrix.
     - sol (object): Solution object from an ODE solver.
-    - B (numpy.ndarray): Time-invariant matrix from the Floquet transform.
+                   sol.y: has shape nstates * ntime, where nstates = 2 * n
+    - B (numpy.ndarray): Time-invariant matrix from the Floquet transform, shape (n x n)
     - t_values (numpy.ndarray): Time values for the solution.
 
     Returns:
     - list of numpy.ndarray: List of Q(t) matrices for each time step.
     """
-    if method=='manual':
+    n = B.shape[0] 
+    if method=='forloop':
         q_values = []
         for i, t in enumerate(t_values):
-            x_t = sol.y[:, i].reshape((size, size))  # Get x(t) at time t
+            x_t = sol.y[:, i].reshape((n, n))  # Get x(t) at time t
             exp_Bt = expm(B * t)  # Compute e^(Bt)
             q_t = x_t @ np.linalg.inv(exp_Bt)  # Compute q(t) = x(t) * e^(-Bt)
             q_values.append(q_t)
+        q_values = np.array(q_values)
+    elif method=='vectorized':
+        raise NotImplementedError(method)
     else:
         raise NotImplementedError(method)
     return q_values
 
-def compute_y(t_values, B, y0):
+def compute_y(t_values, B, y0, method='forloop'):
     """
     Computes y(t) = e^(Bt) * y0 for all time steps.
 
     Parameters:
-    - t_values (numpy.ndarray): Time values for the solution.
-    - B (numpy.ndarray): Time-invariant matrix from the Floquet transform.
-    - y0 (numpy.ndarray): Initial condition for y(t).
+    - t_values (numpy.ndarray): Time values for the solution. array of length nt
+    - B (numpy.ndarray): Time-invariant matrix from the Floquet transform, shape n x n
+    - y0 (numpy.ndarray): Initial condition for y(t), length n.
 
     Returns:
     - list of numpy.ndarray: List of y(t) for each time step.
     """
-    y_t_values = []
-    for t in t_values:
-        #import pdb ; pdb.set_trace()
-        y_t = expm(B * t) @ y0
-        y_t_values.append(y_t)
+    if method == 'forloop':
+        y_t_values = []
+        for t in t_values:
+            y_t = expm(B * t) @ y0
+            y_t_values.append(y_t)
+        y_t_values = np.array(y_t_values)
+    elif method == "vectorized":
+        # expm does not support vectorized input, so use a list comprehension
+        y_t_values = np.array([expm(B * t) @ y0 for t in t_values])
+    else:
+        raise NotImplementedError(method)
     return y_t_values
 
-def compute_x(q_values, y_t_values):
+def compute_x(q_values, y_t_values, method='forloop'):
     """
     Computes x(t) = Q(t) * y(t) for all time steps.
 
@@ -74,12 +83,18 @@ def compute_x(q_values, y_t_values):
     Returns:
     - list of numpy.ndarray: List of x(t) matrices for each time step.
     """
-    x_t_values = []
-    for i in range(len(q_values)):
-        q_t = q_values[i]  # Get Q(t) (Floquet transformation matrix at time t)
-        y_t = y_t_values[i]  # Get y(t) (transformed solution at time t)
-        x_t = q_t @ y_t  # Compute x(t) = Q(t) * y(t)
-        x_t_values.append(x_t)
+    if method == 'forloop':
+        x_t_values = []
+        for i in range(len(q_values)):
+            q_t = q_values[i]  # Get Q(t) (Floquet transformation matrix at time t)
+            y_t = y_t_values[i]  # Get y(t) (transformed solution at time t)
+            x_t = q_t @ y_t  # Compute x(t) = Q(t) * y(t)
+            x_t_values.append(x_t)
+        x_t_values = np.array(x_t_values)
+    elif method == "vectorized":
+        x_t_values = np.einsum('tik,tkj->tij', q_values, y_t_values)
+    else:
+        raise NotImplementedError(method)
     return x_t_values
 
 def solve(At,time,plot=True,folder_name=None):
@@ -101,42 +116,63 @@ def solve(At,time,plot=True,folder_name=None):
         plot_matrix(y_vals, time, folder_name=None)
     return sol
 
-def floquet_eigenanalysis(sol,time,omega,plot=False):
-    print('computing eigenvalues for solution usingn floquet analysis')
-    # Compute the required transformations
+def floquet_eigenanalysis(sol,time,omega,plot=False, sanityChecks=False, verbose=True):
+    if verbose:
+        print('Computing eigenvalues for solution using floquet analysis...')
 
+    # Compute the required transformations
     period=2*np.pi/omega
-    problem_size=int(np.sqrt(sol.y.shape[0]))
-    x0 = np.eye(problem_size)
+    nStates = int(np.sqrt(sol.y.shape[0]))
+    x0 = np.eye(nStates)
     # Solve the system numerically over one period [0, 2*pi]
 
-    # Find monodromy matrix (Last instance of fundamental matrix)
-    monodromy = sol.y[:, -1].reshape(problem_size,problem_size)
+    # Monodromy matrix (Last instance of fundamental matrix)
+    monodromy = sol.y[:, -1].reshape(nStates, nStates)
 
-    # Find floquet exponent matrix
+    # Floquet exponent matrix
     # B = logm(C) / (2 * np.pi) where C is monodromy
     exponent_matrix = compute_B(monodromy, period)
     
     # Get state transformation matrix
-    q_values = compute_q(problem_size, sol, exponent_matrix, time) #plot the time series and fft from mode_projection add debug flags
-    q_values = np.array(q_values)
-
-    # Perform periodicity test on Q
-    test_periodic_matrix(q_values, period, tol=1e-3)
-    #Hey justin, what do you mean you can guess(?) the modes from just looking at this
+    q_values = compute_q(sol, exponent_matrix, time, method='forloop')
 
     # Get solution in floquet space (y) by employing exponent matrix, initial conditions
-    y_t_values = compute_y(time, exponent_matrix, x0)
-    y_t_values = np.array(y_t_values)
+    y_t_values = compute_y(time, exponent_matrix, x0, method='forloop')
 
-    # get solution x from floquet solution and transformation matrix
-    x_t_values = compute_x(q_values, y_t_values)
-    x_t_values = np.array(x_t_values)
 
-    #if np.allclose(x_t_values.reshape(x_t_values.shape[0], 4), sol.y.T, atol=1e-3):
-    #    print('calculated solution from floquet theory is close to integrated solution')
+    # Perform a couple of sanity checks
+    if sanityChecks:
+        # Perform periodicity test on Q
+        test_periodic_matrix(q_values, period, tol=1e-3)
 
-    
+        # Get solution x from floquet solution and transformation matrix
+        x_t_values = compute_x(q_values, y_t_values, method='vectorized')
+        if np.allclose(x_t_values.reshape(x_t_values.shape[0], nStates*nStates), sol.y.T, atol=1e-3):
+            print('[ OK ] Calculated solution from floquet theory is close to integrated solution')
+        else:
+            raise Exception('Calculated solution is not close to integrated solution')
+
+        # Check for loop and vectorized for x
+        x_t_values2 = compute_x(q_values, y_t_values, method='forloop')
+        if np.allclose(x_t_values, x_t_values2, atol=1e-3):
+            print('[ OK ] x_t for loop and vectorized match')
+        else:
+            raise Exception('x_t for loop and vectorized do not match')
+
+        # Check for loop and vectorized for y
+        y_t_values2 = compute_y(time, exponent_matrix, x0, method='vectorized') #plot the time series and fft from mode_projection add debug flags
+        if np.allclose(y_t_values, y_t_values2, atol=1e-3):
+            print('[ OK ] y_t_values for loop and vectorized match')
+        else:
+            raise Exception('y_t_values for loop and vectorized do not match')
+
+        # Check for loop and vectorized for q
+        #q_values2 = compute_q(sol, exponent_matrix, time, method='vectorized') #plot the time series and fft from mode_projection add debug flags
+        #if np.allclose(q_values, q_values2, atol=1e-3):
+        #    print('[ OK ] q_values for loop and vectorized match')
+        #else:
+        #    raise Exception('q_values for loop and vectorized do not match')
+
     if plot:
         #plot_X_one_period(time, sol)
         plot_matrix(q_values, time, folder_name='q_values')
@@ -198,7 +234,7 @@ def floquet_eigenanalysis_old(sol,time,omega,C,plot=False):
 
     #Mon = sol.y[:, -1].reshape(problem_size,problem_size)
     
-    [D,V] = np.linalg.eig(B) #The floquet multipliers are the eigenvalues of the monondromy matrix
+    [D,V] = np.linalg.eig(B) #The floquet multipliers are the eigenvalues of the monodromy matrix
     
     lambda_real=np.real(D)
     lambda_imag=np.imag(D)
@@ -238,9 +274,9 @@ def test_periodic(At, period, tol=1e-3):
     
     # Check if they are approximately equal
     if np.allclose(A0, A1, atol=tol):
-        print("Matrix is periodic")
+        print("[ OK ] Matrix is periodic")
     else:
-        print("Matrix is NOT periodic")
+        print("[FAIL] Matrix is NOT periodic")
         raise ValueError("Matrix is not periodic")
 
 def test_periodic_matrix(matrix, period, tol=1e-3):
@@ -254,9 +290,9 @@ def test_periodic_matrix(matrix, period, tol=1e-3):
     
     # Check if they are approximately equal
     if np.allclose(matrix0, matrix1, atol=tol):
-        print("Matrix is periodic")
+        print("[ OK ] Matrix is periodic")
     else:
-        print("Matrix is NOT periodic")
+        print("[FAIL] Matrix is NOT periodic")
         raise ValueError("Matrix is not periodic")
 #make for other type of variables too
 

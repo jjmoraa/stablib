@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.linalg import expm
-from scipy.fft import fft
 
 #from stablib.PostProcessing import plot_fft_norms, plot_control_panel, plot_peters
 
@@ -84,11 +82,10 @@ def time_multiply(mat1, mat2, method="forloop"):
                         sum_val += mat1[time, i, k] * mat2[time,k, j]
                     result[time, i, j] = sum_val
 
-        print('')
-
     elif method =="einsum":
-        result=0
-        pass
+        # Use einsum for batched matrix multiplication over time
+        # 'tik,tkj->tij' means: for each t, sum over k: mat1[t,i,k] * mat2[t,k,j]
+        result = np.einsum('tik,tkj->tij', mat1, mat2)
 
     elif method =="@":
         result=0
@@ -97,7 +94,7 @@ def time_multiply(mat1, mat2, method="forloop"):
     return result
 
 
-def mode_projection(C, Q, V, t, plot=False, debug_check=True):
+def mode_projection(C, Q, V, t, plot=False, sanityChecks=False):
 
     #Ct_array = np.zeros((num_timesteps, n, n), dtype=np.complex128) 
     #Ct_arrar[it, :, :] = Ct(t[i])
@@ -111,27 +108,14 @@ def mode_projection(C, Q, V, t, plot=False, debug_check=True):
     basis = np.zeros((num_timesteps, n, n), dtype=np.complex128)  # Initialize the result matrix
 
     print('Getting "sandwich :)" (basis of eigenvectors)')
-    # M1 = time_multiply(method="einsum")
-    # if debug_check:
-    #     M2 = time_multiply(method="forloop")
-    # np.ttesting.assert_almost_equal(M1, M2, 8)
+    basis = time_multiply(P, V, method="einsum")
 
-    # for itime, time in enumerate(range(num_timesteps)):  # Iterate over time steps
-    #     if np.mod(itime,50)==0:
-    #         print(time, end=" ")
-    #     for m in range(n):  # Iterate over columns
-    #         for i in range(n):  # Iterate over rows
-    #             sum_val = 0  # Accumulate the sum for the element (time, i, m)
-    #             for j in range(n):  # Iterate over the intermediate dimension
-    #                 sum_val += P[time, i, j] * V[j, m]
-    #             basis[time, i, m] = sum_val  # Store the result
-    # print('')
-
-    # # sanitybasis=time_multiply(P, V, method="forloop")
-    basis=time_multiply(P, V, method="forloop")
-
-    # if np.allclose(basis, sanitybasis, atol=1e-3):
-    #    print("Multiplication is good")
+    if sanityChecks:
+        basis2 = time_multiply(P, V, method="forloop")
+        if np.allclose(basis, basis2, atol=1e-8):
+           print("[ OK ] Multiplication is good")
+        else: 
+            raise Exception("Multiplication is bad")
 
     # Fourier coefficients storage (make sure this works correctly)
     freqs = np.fft.fftfreq(len(t), t[1]-t[0])
@@ -139,11 +123,12 @@ def mode_projection(C, Q, V, t, plot=False, debug_check=True):
     ncomp= len(freqs)
     fourier_coefficients = np.zeros((ncomp, n, n), dtype=complex)  # (n, n, t)
 
-    out_spec_basis=time_multiply(C, basis, method="forloop")
-    out_spec_basis_sanity=C @ basis 
+    out_spec_basis=C @ basis 
 
-    if np.allclose(out_spec_basis, out_spec_basis_sanity, atol=1e-3):
-        print("Multiplication is good")
+    if sanityChecks:
+        out_spec_basis_sanity=time_multiply(C, basis, method="forloop")
+        if np.allclose(out_spec_basis, out_spec_basis_sanity, atol=1e-8):
+            print("[ OK ] Multiplication is good")
 
     #each column is a mode, so each column has n elements that change with time (time series)
     for j in range(n):  # Iterate over columns (modes)
@@ -176,18 +161,16 @@ def mode_projection(C, Q, V, t, plot=False, debug_check=True):
         for j in range(n):
             participation_factor[freq,j]=norms[freq,j]/total_norms[freq]
 
-    '''
-    if plot:
-        plot_peters(freqs,participation_factor,total_norms)
-        #add plot function here
-
-    
-    
-    for freq in range(ncomp):
-        max_vals=np.max(participation_factor[freq,:])
-        max_index_full[freq]=np.argmax(np.max(participation_factor[freq, :]))
-        max_index[freq] =  max_index_full[freq] - ifreq0
-    '''
+#     if plot:
+#         plot_peters(freqs,participation_factor,total_norms)
+#         #add plot function here
+# 
+#     
+#     
+#     for freq in range(ncomp):
+#         max_vals=np.max(participation_factor[freq,:])
+#         max_index_full[freq]=np.argmax(np.max(participation_factor[freq, :]))
+#         max_index[freq] =  max_index_full[freq] - ifreq0
     
     start_row = int(np.ceil(ncomp / 2))
     # Slice the 2D array (rows only)
@@ -209,4 +192,4 @@ def mode_projection(C, Q, V, t, plot=False, debug_check=True):
 def check_real(vector, name="vector"):
     if not np.isrealobj(vector):
         raise ValueError(f"{name} contains complex values.")
-    
+

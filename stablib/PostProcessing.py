@@ -26,9 +26,11 @@ def plot_peters(frequencies,participation_factor,epsilon,folder_name=None):
 
     # Generate timestamped folder name if not provided
     if folder_name is None:
-        folder_name = '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        #folder_name = '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + datetime.now().strftime("%Y-%m-%d")
     else:
-        folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        #folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d")
 
     # Create the folder in the current working directory
     folder_path = os.path.join(os.getcwd(), folder_name)
@@ -66,9 +68,9 @@ def plot_matrix(matrix, time, folder_name=None):
     """
     # Generate timestamped folder name if not provided
     if folder_name is None:
-        folder_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' +datetime.now().strftime("%Y-%m-%d")
     else:
-        folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' +folder_name + "_" + datetime.now().strftime("%Y-%m-%d")
 
     # Create the folder in the current working directory
     folder_path = os.path.join(os.getcwd(), folder_name)
@@ -105,9 +107,9 @@ def plot_fft_norms(norm_fourier_coeffs, freqs, folder_name=None):
     """
     # Generate timestamped folder name if not provided
     if folder_name is None:
-        folder_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + datetime.now().strftime("%Y-%m-%d")
     else:
-        folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + folder_name + "_" + datetime.now().strftime("%Y-%m-%d")
 
     # Create the folder in the current working directory
     folder_path = os.path.join(os.getcwd(), folder_name)
@@ -135,9 +137,9 @@ def plot_control_panel(time, sandwich, norm_fourier_coeffs, freqs, max_index, ma
 
         # Generate timestamped folder name if not provided
     if folder_name is None:
-        folder_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + datetime.now().strftime("%Y-%m-%d")
     else:
-        folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + folder_name + "_" + datetime.now().strftime("%Y-%m-%d")
 
     # Create the folder in the current working directory
     folder_path = os.path.join(os.getcwd(), folder_name)

@@ -2,10 +2,13 @@
 """
 Stability analysis of the Mathieu oscillator with Floquet theory.
 
-@author: ricriv
-"""
+Adapted from: 
+   https://gitlab.windenergy.dtu.dk/wtstab/stability-analysis-of-wind-turbines
 
-# %% Import.
+    @author: ricriv
+
+
+"""
 
 import os
 
@@ -16,20 +19,14 @@ from scipy import signal
 from scipy.integrate import solve_ivp
 from scipy.linalg import eig, inv
 
-mpl.use("Agg")
-# mpl.use('Qt5Agg')
 
-#plt.style.use("rcparams.mplstyle")
-
-plt.close("all")
-
-
-def mo_riva():
+def mo_riva(plot=False):
     print(os.getcwd())
-    os.makedirs("./mathieu_oscillator/", exist_ok=True)
+    if plot:
+        os.makedirs("./_mathieu_oscillator/", exist_ok=True)
 
 
-    # %% Define system.
+    # --- Define system.
 
     # Define parameters for the Mathieu oscillator from Allen's paper.
     m = 1.0
@@ -59,7 +56,7 @@ def mo_riva():
     nx = 2
 
 
-    # %% Simulate free response.
+    # --- Simulate free response.
 
     # Set initial condition.
     x0 = np.array([1.0, 0.0])
@@ -80,16 +77,15 @@ def mo_riva():
     )
 
     # Plot time series.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Time [s]")
-    ax.set_ylabel("Displacement [m]")
-    ax.set_xlim(0.0, 100.0)
-    ax.plot(sol_free.t, sol_free.y[0, :])
-    fig.savefig(
-        "./mathieu_oscillator/free_response_time.svg", bbox_inches="tight"
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("Displacement [m]")
+        ax.set_xlim(0.0, 100.0)
+        ax.plot(sol_free.t, sol_free.y[0, :])
+        fig.savefig( "./_mathieu_oscillator/free_response_time.svg", bbox_inches="tight")
 
-    # Compute PSD.
+    # --- Compute PSD.
     # window = np.ones(sol_free.t.size)
     window = signal.get_window("hann", int(sol_free.t.size // 4))
     nperseg = len(window)
@@ -116,20 +112,18 @@ def mo_riva():
     )
 
     # Plot PSD.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Frequency [Hz]")
-    ax.set_ylabel("Displacement [m²/Hz]")
-    ax.set_yscale("log")
-    ax.set_xlim(0.0, 0.5)
-    # ax.set_ylim(1e-4, 1e1)  # Ok for rectangular window.
-    ax.set_ylim(1e-15, 1e-2)  # Ok for Hann window.
-    ax.plot(y_freq, y_PSD)
-    fig.savefig(
-        "./mathieu_oscillator/free_response_psd.svg", bbox_inches="tight"
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Frequency [Hz]")
+        ax.set_ylabel("Displacement [m²/Hz]")
+        ax.set_yscale("log")
+        ax.set_xlim(0.0, 0.5)
+        # ax.set_ylim(1e-4, 1e1)  # Ok for rectangular window.
+        ax.set_ylim(1e-15, 1e-2)  # Ok for Hann window.
+        ax.plot(y_freq, y_PSD)
+        fig.savefig( "./_mathieu_oscillator/free_response_psd.svg", bbox_inches="tight")
 
-
-    # %% Apply Floquet theory.
+    # --- Apply Floquet theory.
 
     # 1 period.
     time_stm = np.linspace(0.0, period, 2001)
@@ -151,18 +145,17 @@ def mo_riva():
     )
 
     # Plot state transition matrix.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Time [s]")
-    ax.set_ylabel("State transition matrix")
-    ll = ax.plot(sol_stm.t, sol_stm.y.T)
-    ax.legend(
-        ll,
-        (r"$\Phi_{1,1}$", r"$\Phi_{1,2}$", r"$\Phi_{2,1}$", r"$\Phi_{2,2}$"),
-        loc="center",
-    )
-    fig.savefig(
-        "./mathieu_oscillator/state_transition_matrix.svg", bbox_inches="tight"
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("State transition matrix")
+        ll = ax.plot(sol_stm.t, sol_stm.y.T)
+        ax.legend(
+            ll,
+            (r"$\Phi_{1,1}$", r"$\Phi_{1,2}$", r"$\Phi_{2,1}$", r"$\Phi_{2,2}$"),
+            loc="center",
+        )
+        fig.savefig("./_mathieu_oscillator/state_transition_matrix.svg", bbox_inches="tight")
 
     # Reshape to 3D array.
     # The state transition matrix, stm, is ordered as:
@@ -181,34 +174,32 @@ def mo_riva():
         x_sampled[:, i] = monodromy @ x_sampled[:, i - 1]
 
     # Plot state at every period.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Time [s]")
-    ax.set_ylabel("Displacement [m]")
-    ax.set_xlim(0.0, 100.0)
-    ax.plot(sol_free.t, sol_free.y[0, :])
-    ax.scatter(time_sampled, x_sampled[0, :], color="C1")
-    fig.savefig(
-        "./mathieu_oscillator/free_response_time_with_monodromy.svg",
-        bbox_inches="tight",
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("Displacement [m]")
+        ax.set_xlim(0.0, 100.0)
+        ax.plot(sol_free.t, sol_free.y[0, :])
+        ax.scatter(time_sampled, x_sampled[0, :], color="C1")
+        fig.savefig("./_mathieu_oscillator/free_response_time_with_monodromy.svg", bbox_inches="tight",
+        )
 
     # Compute characteristic multipliers.
     theta, S = eig(monodromy)
 
     # Plot characteristic multipliers.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Real")
-    ax.set_ylabel("Imag")
-    ax.set_xlim(-1.1, +1.1)
-    ax.set_ylim(-1.1, +1.1)
-    ax.set_aspect("equal")
-    ax.add_artist(plt.Circle(xy=(0.0, 0.0), radius=1.0, edgecolor="k", fill=False))
-    for i in range(theta.size):
-        ax.scatter(theta[i].real, theta[i].imag, label=f"Mode {i+1}")
-    ax.legend(loc="center")
-    fig.savefig(
-        "./mathieu_oscillator/characteristic_multiplier.svg", bbox_inches="tight"
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Real")
+        ax.set_ylabel("Imag")
+        ax.set_xlim(-1.1, +1.1)
+        ax.set_ylim(-1.1, +1.1)
+        ax.set_aspect("equal")
+        ax.add_artist(plt.Circle(xy=(0.0, 0.0), radius=1.0, edgecolor="k", fill=False))
+        for i in range(theta.size):
+            ax.scatter(theta[i].real, theta[i].imag, label=f"Mode {i+1}")
+        ax.legend(loc="center")
+        fig.savefig( "./_mathieu_oscillator/characteristic_multiplier.svg", bbox_inches="tight")
 
     # Define shift for characteristic exponents.
     if time_stm.size % 2 == 0:
@@ -228,18 +219,16 @@ def mo_riva():
         np.newaxis, :
     ] / period + 2j * np.pi / period * shift[:, np.newaxis]
    # Plot characteristic exponents.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Real [rad/s]")
-    ax.set_ylabel("Imag [rad/s]")
-    ax.set_xlim(-0.04, +0.02)
-    ax.set_ylim(-3.2, +3.2)
-    for i in range(eta.shape[1]):
-        ax.scatter(eta[:, i].real, eta[:, i].imag, label=f"Mode {i+1}")
-    ax.legend()
-
-    fig.savefig(
-        "./mathieu_oscillator/characteristic_exponent.svg", bbox_inches="tight"
-    )
+    if plot:
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Real [rad/s]")
+        ax.set_ylabel("Imag [rad/s]")
+        ax.set_xlim(-0.04, +0.02)
+        ax.set_ylim(-3.2, +3.2)
+        for i in range(eta.shape[1]):
+            ax.scatter(eta[:, i].real, eta[:, i].imag, label=f"Mode {i+1}")
+        ax.legend()
+        fig.savefig( "./_mathieu_oscillator/characteristic_exponent.svg", bbox_inches="tight")
 
     # Compute frequency and damping.
     natural_frequency = np.abs(eta)  # [rad/s]
@@ -309,39 +298,33 @@ def mo_riva():
     # print(stability_red[:, :, i_mode])
 
     # Plot again the PSD, this time with the harmonics labelled.
-    fig, ax = plt.subplots()
-    ax.set_xlabel("Frequency [Hz]")
-    ax.set_ylabel("Displacement [m²/Hz]")
-    ax.set_yscale("log")
-    ax.set_xlim(0.0, 0.5)
-    ax.set_ylim(1e-15, 1e0)  # Ok for Hann window.
-    ax.plot(y_freq, y_PSD)
-    y_PSD_at_natural_freq = np.interp(stability_red[:, 1, i_mode], y_freq, y_PSD)
-    for i_harmonic in range(stability_red.shape[0]):
-        ax.annotate(
-            f"{int(stability_red[i_harmonic, 0, i_mode])}"+ r"$\Omega$",
-            (stability_red[i_harmonic, 1, i_mode], y_PSD_at_natural_freq[i_harmonic]),
-            xytext=(
-                stability_red[i_harmonic, 1, i_mode],
-                y_PSD_at_natural_freq[i_harmonic] * 10.0,
-            ),
-            arrowprops={"arrowstyle": "->", "color": "k"},
-            horizontalalignment="center",
-            verticalalignment="bottom",
-            color="k",
-            bbox={"boxstyle": "round", "facecolor": "white", "edgecolor": "k"},
-        )
+    if plot :
+        fig, ax = plt.subplots()
+        ax.set_xlabel("Frequency [Hz]")
+        ax.set_ylabel("Displacement [m²/Hz]")
+        ax.set_yscale("log")
+        ax.set_xlim(0.0, 0.5)
+        ax.set_ylim(1e-15, 1e0)  # Ok for Hann window.
+        ax.plot(y_freq, y_PSD)
+        y_PSD_at_natural_freq = np.interp(stability_red[:, 1, i_mode], y_freq, y_PSD)
+        for i_harmonic in range(stability_red.shape[0]):
+            ax.annotate(
+                f"{int(stability_red[i_harmonic, 0, i_mode])}"+ r"$\Omega$",
+                (stability_red[i_harmonic, 1, i_mode], y_PSD_at_natural_freq[i_harmonic]),
+                xytext=(
+                    stability_red[i_harmonic, 1, i_mode],
+                    y_PSD_at_natural_freq[i_harmonic] * 10.0,
+                ),
+                arrowprops={"arrowstyle": "->", "color": "k"},
+                horizontalalignment="center",
+                verticalalignment="bottom",
+                color="k",
+                bbox={"boxstyle": "round", "facecolor": "white", "edgecolor": "k"},
+            )
+        fig.savefig( "./_mathieu_oscillator/free_response_psd_with_labels.svg", bbox_inches="tight")
 
 
-    fig.savefig(
-        "./mathieu_oscillator/free_response_psd_with_labels.svg",
-        bbox_inches="tight",
-    )
-
-    plt.show()
-
-    #return sol_free, sol_stm
-
+    # --- Return outputs in dict
     d = dict()
     d['R'] = R
     d['P'] = P

@@ -23,8 +23,7 @@ import matplotlib.pyplot as plt
 
 from datetime import datetime
 # Locals
-from ronnie import mass, damping, stiffness
-import welib.essentials
+from stablib.models.model5DOFs import mass, damping, stiffness
 from state_space import A_fromMCK
 from floquet import  solve,floquet_eigenanalysis, test_periodic
 from modeProjection import mode_projection

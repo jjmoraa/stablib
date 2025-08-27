@@ -17,6 +17,13 @@ from stablib.PostProcessing import plot_freq_heatmap
 from t31_mathieu_oscillator_riva import mo_riva
 
 
+
+# --- Script parameters 
+sanityChecks = True
+
+
+
+# 
 def vectors_equal_up_to_sign(a, b, rtol=1e-5, atol=1e-8):
     return np.allclose(a, b, rtol=rtol, atol=atol) or np.allclose(a, -b, rtol=rtol, atol=atol)
 
@@ -67,36 +74,36 @@ sol=solve(At,time,plot=True)
 print('Solution is finished')
 
 if np.allclose(sol.y, sol_stm.y, atol=1e-3):
-    print('Solution is close')
+    print('[ OK ] Solution is close')
 else:
     print('Solution is NOT close')
 
 # Perform floquet analysis
-[monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=True)
+[monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=True, sanityChecks=sanityChecks)
 
 # CHECKS against riva
 if np.allclose(monodromy, monodromy_riva, atol=1e-3):
-    print('monodromy is close')
+    print('[ OK ] monodromy is close')
 else:
     print('monodromy is NOT close')
 
 if np.allclose(eigenvalues_mon, theta, atol=1e-3):
-    print('mon eigenvalues is close')
+    print('[ OK ] mon eigenvalues is close')
 else:
     print('mon eigenvalues is NOT close')
 
 if np.allclose(eigenvectors_mon, V, atol=1e-3):
-    print('mon eigenvectors is close')
+    print('[ OK ] mon eigenvectors is close')
 else:
     print('mon eigenvectors is NOT close')
 
 if np.allclose(eigenvalues_exp, eta[1000,:], atol=1e-1):
-    print('exp eigenvalues is close')
+    print('[ OK ] exp eigenvalues is close')
 else:
     print('WARNING: exp eigenvalues is NOT close')
 
 if np.allclose(eigenvectors_exp, S, atol=1e-3):
-    print('exp eigenvectors is close')
+    print('[ OK ] exp eigenvectors is close')
 else:
     print('exp eigenvectors is NOT close')
 
@@ -106,10 +113,10 @@ C = mathieu_c
 
 # Perform modal projection on exponent matrix
 
-[max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True) #####REALLY CHECK
+[max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True, sanityChecks=sanityChecks)
 
 if vectors_equal_up_to_sign(max_index, n_principal-[1000,1000]):
-    print('strongest harmonic is close')
+    print('[ OK ] strongest harmonic is close')
 else:
     print('strongest harmonic is NOT close')
 

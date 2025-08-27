@@ -15,6 +15,7 @@ Psi(t,0)'=[A^-1*B]Psi(t,0)
 Initial condition must always be I for q
 '''
 # 
+import os
 import pandas as pd
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -23,15 +24,22 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 # Locals
-# import welib.essentials
-from stablib.ronnie import mass, damping, stiffness
+from stablib.tictoc import Timer
+from stablib.models.model5DOFs import mass, damping, stiffness
 from stablib.state_space import A_fromMCK
-from stablib.floquet import  solve,floquet_eigenanalysis, test_periodic
+from stablib.floquet import  solve, floquet_eigenanalysis, test_periodic
 from stablib.modeProjection import mode_projection
 from stablib.PostProcessing import plot_freq_heatmap
 # Define the mass, damping and stiffness matrices
 
-# Define constants
+
+# --- Script parameters
+sanityChecks = False
+plotIVP = False
+plotFloquet = False
+plotModeProj = False
+
+# --- Define constants
 m = 500
 l = 30
 M = 50000
@@ -39,7 +47,12 @@ edgNatFreq_hz = 0.8  # Edgewise frequency in Hz
 edgNatFreq_rad = edgNatFreq_hz * 2 * np.pi  # Convert to rad/s
 kx = 200000
 ky = 200000
+
+
 omegas = np.linspace(0.1, 1, 10) #should be (0.1, 1, 100)
+
+
+# Storage...
 eigenvalues_for_range=[]
 participation_factor_for_range=[]
 mode_frequencies=[]
@@ -50,33 +63,35 @@ f_d_for_range=[]
 f_0_for_range=[]
 zeta_for_range=[]
 
-#fA(t, omega)
-#fnt(omega)
-
 for iom, omega in enumerate(omegas):
+    print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ------------------------')
     period=2*np.pi/omega
+    # Figuring out Number of points per period
     base_points=5000
     min_points=1000
     #num_points = int(min_points + (base_points - min_points)  * (1-np.log(omega / omegas[0]) / np.log(omegas[-1] / omegas[0])))#check this oneliner
-    time=np.linspace(0,period,256)
-    # mass_matrix=mass(m, l, omega, time)
-    # damping_matrix=damping(omega, time)
-    # stiffness_matrix=stiffness(edgNatFreq_rad, m, l, kx, ky, omega, time)
+    num_points = 256
+    time=np.linspace(0, period, num_points)
     # Functions of time
     Mt = lambda t: mass(M, m, l, omega, t)
     Kt = lambda t: stiffness(edgNatFreq_rad, m, l, kx, ky, omega, t)
     Ct = lambda t: damping(omega, t)
     At = lambda t: A_fromMCK(Mt(t), Ct(t), Kt(t) )
   
-    test_periodic(At, period, tol=1e-3)
-    sol=solve(At,time,plot=False)
-    print('Solution is finished')
+    if sanityChecks:
+        test_periodic(At, period, tol=1e-3)
+
+    with Timer('solve-ivp'):
+        sol=solve(At,time,plot=plotIVP)
     C = np.zeros((1, int(np.sqrt(sol.y.shape[0]))))
     C[0, 4] = 1
-    [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=True)
+
+    with Timer('floquet_eig'):
+        [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=plotFloquet, sanityChecks=sanityChecks)
     eigenvalues_for_range.append(eigenvalues_exp)
     
-    [max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True) #####REALLY CHECK
+    with Timer('mode_proj'):
+        [max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=plotModeProj, sanityChecks=sanityChecks)
 
     # plot_freq_heatmap(participation_factor)
     participation_factor_for_range.append(participation_factor)
@@ -112,7 +127,10 @@ ax.set_title('Campbell Diagram (Floquet)')
 ax.grid(True)
 ax.legend(loc='best', fontsize='small')
 plt.tight_layout()
+# filename = (datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), f"t53_model5_Campbell.png")
+scriptDir = os.path.dirname(os.path.abspath(__file__))
+plt.savefig(os.path.join(scriptDir, f"t53_model5_Campbell.png"))
+
+
 plt.show()
-# filename = (datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), f"campbell_ronnie.png")
-# plt.savefig(filename)
 plt.close()
