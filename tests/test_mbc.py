@@ -1,7 +1,7 @@
 import os
 import unittest
 import numpy as np
-from floquet import *
+from stablib.floquet import *
 import matplotlib.pyplot as plt
 
 class TestMBC(unittest.TestCase):

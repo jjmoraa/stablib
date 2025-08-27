@@ -20,15 +20,15 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import logm, expm
 import matplotlib.pyplot as plt
-
 from datetime import datetime
+
 # Locals
-from ronnie import mass, damping, stiffness
-import welib.essentials
-from state_space import A_fromMCK
-from floquet import  solve,floquet_eigenanalysis, test_periodic
-from modeProjection import mode_projection
-from PostProcessing import plot_freq_heatmap
+# import welib.essentials
+from stablib.ronnie import mass, damping, stiffness
+from stablib.state_space import A_fromMCK
+from stablib.floquet import  solve,floquet_eigenanalysis, test_periodic
+from stablib.modeProjection import mode_projection
+from stablib.PostProcessing import plot_freq_heatmap
 # Define the mass, damping and stiffness matrices
 
 # Define constants

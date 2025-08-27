@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.linalg import expm
 from scipy.fft import fft
-import seaborn as sns
-from PostProcessing import plot_fft_norms, plot_control_panel, plot_peters
+
+#from stablib.PostProcessing import plot_fft_norms, plot_control_panel, plot_peters
 
 def ensure_3d(mat, T):
     """

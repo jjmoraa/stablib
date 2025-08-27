@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import openfast_toolbox
 import os
+
+
 scriptDir = os.path.dirname(__file__)
 print(__file__)
 print(openfast_toolbox.__file__)
 from openfast_toolbox.io.fast_linearization_file import FASTLinearizationFile
+
 
 # --- Script parameters
 filename = 'ws03.0.1.lin'
@@ -26,4 +29,3 @@ print('A:')
 print(dfs['A'])
 
 
-import pdb; pdb.set_trace()

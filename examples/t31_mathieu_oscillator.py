@@ -6,15 +6,16 @@ from scipy.linalg import logm, expm
 import matplotlib.pyplot as plt
  
 from datetime import datetime
+
 # Locals
-from ronnie import mass, damping, stiffness
-import welib.essentials
-from state_space import A_fromMCK
-from floquet import  solve,floquet_eigenanalysis, test_periodic
-from modeProjection import mode_projection
-from PostProcessing import plot_freq_heatmap
+# import welib.essentials
+from stablib.state_space import A_fromMCK
+from stablib.floquet import  solve,floquet_eigenanalysis, test_periodic
+from stablib.modeProjection import mode_projection
+from stablib.PostProcessing import plot_freq_heatmap
+# Super local
 from t31_mathieu_oscillator_riva import mo_riva
-# Define the mass, damping and stiffness matrices
+
 
 def vectors_equal_up_to_sign(a, b, rtol=1e-5, atol=1e-8):
     return np.allclose(a, b, rtol=rtol, atol=atol) or np.allclose(a, -b, rtol=rtol, atol=atol)

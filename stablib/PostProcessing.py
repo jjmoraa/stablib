@@ -26,7 +26,7 @@ def plot_peters(frequencies,participation_factor,epsilon,folder_name=None):
 
     # Generate timestamped folder name if not provided
     if folder_name is None:
-        folder_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_name = '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     else:
         folder_name = folder_name + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 

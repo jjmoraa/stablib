@@ -1,10 +1,11 @@
 import numpy as np
 from scipy.linalg import logm, expm
 from scipy.integrate import solve_ivp
-from state_space import solve_ode_At_flat
-from modeProjection import mode_projection
-from PostProcessing import plot_matrix
 import matplotlib.pyplot as plt
+# Local
+from stablib.state_space import solve_ode_At_flat
+from stablib.modeProjection import mode_projection
+from stablib.PostProcessing import plot_matrix
 
 def compute_B(C,period):
 

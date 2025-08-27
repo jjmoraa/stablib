@@ -3,11 +3,11 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import logm, expm
 # Locals
-from ronnie import mass, damping, stiffness
-import welib.essentials
-from state_space import A_fromMCK
-from floquet import  solve, test_periodic
-from modeProjection import mode_projection
+# import welib.essentials
+from stablib.state_space import A_fromMCK
+from stablib.floquet import  solve, test_periodic
+from stablib.modeProjection import mode_projection
+from stablib.ronnie import mass, damping, stiffness
 
 # Define time period
 period=2*np.pi
