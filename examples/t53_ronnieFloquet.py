@@ -71,17 +71,22 @@ for iom, omega in enumerate(omegas):
     test_periodic(At, period, tol=1e-3)
     sol=solve(At,time,plot=False)
     print('Solution is finished')
-    [eigenvalues,participation_factor] = floquet_eigenanalysis(sol,time,omega, plot=False)
-    eigenvalues_for_range.append(eigenvalues)
-    plot_freq_heatmap(participation_factor)
+    C = np.zeros((1, int(np.sqrt(sol.y.shape[0]))))
+    C[0, 4] = 1
+    [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=True)
+    eigenvalues_for_range.append(eigenvalues_exp)
+    
+    [max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True) #####REALLY CHECK
+
+    # plot_freq_heatmap(participation_factor)
     participation_factor_for_range.append(participation_factor)
 
-    omega_d = np.imag(eigenvalues)
+    omega_d = np.imag(eigenvalues_exp)
     f_d = omega_d / (2*np.pi)
-    omega_0 = np.abs(eigenvalues)
+    omega_0 = np.abs(eigenvalues_exp)
     f_0 = omega_0 / (2*np.pi)
     print('f0',f_0)
-    zeta= -np.real(eigenvalues)/omega_0
+    zeta= -np.real(eigenvalues_exp)/omega_0
 
     f_d_for_range.append(f_d)
     f_0_for_range.append(f_0)
