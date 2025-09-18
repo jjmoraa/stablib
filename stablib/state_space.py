@@ -19,7 +19,7 @@ def ode_system_Ax_flat(x, A):
     dxdt_matrix = A @ x_matrix  # Compute A * x(t), where x is a matrix
     return dxdt_matrix.flatten()  # Flatten to return as a vector
 
-def solve_ode_At_flat(At, x0, t_values):
+def solve_ode_At_flat(At, x0, t_values, rtol=1e-6):
     """
     Solves the ODE system x'(t) = A(t) x(t) using solve_ivp.
 
@@ -31,7 +31,18 @@ def solve_ode_At_flat(At, x0, t_values):
     Returns:
     - sol: Solution object returned by solve_ivp.
     """
-    sol = solve_ivp(lambda t, x: ode_system_Ax_flat(x, At(t)), [t_values[0], t_values[-1]], x0, t_eval=t_values)
+    sol = solve_ivp(lambda t, x: ode_system_Ax_flat(x, At(t)), [t_values[0], t_values[-1]], x0, t_eval=t_values, vectorized=True, rtol=rtol)
+
+    # sol_stm = solve_ivp(
+    #     fun=lambda t, stm: (At(t) @ stm.reshape(nx, nx)).reshape(-1),
+    #     t_span=(time_stm[0], time_stm[-1]),
+    #     y0=tm0.reshape(-1),
+    #     t_eval=time_stm,
+    #     vectorized=True,
+    #     rtol=1e-6,
+    # )
+
+
     return sol
 
 

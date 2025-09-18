@@ -6,3 +6,8 @@ __pycache__
 # ignore everythign that starts with undescore except init.py
 _*
 !__init__.py
+
+*.egg-info
+*.svg
+
+*.bak

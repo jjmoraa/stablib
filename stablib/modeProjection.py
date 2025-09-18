@@ -96,10 +96,15 @@ def time_multiply(mat1, mat2, method="forloop"):
 
 def mode_projection(C, Q, V, t, plot=False, sanityChecks=False):
 
+    # Theory dictates last timestep must be removed
+
+    t = t[:-1]
+    Q = Q[:-1]
     #Ct_array = np.zeros((num_timesteps, n, n), dtype=np.complex128) 
     #Ct_arrar[it, :, :] = Ct(t[i])
 
     num_timesteps=len(t)
+    dt = t[1]-t[0]
     n = V.shape[0]  # Number of modes
     P = np.zeros((num_timesteps, n, n), dtype=np.complex128)
     for time in range(num_timesteps):
@@ -108,20 +113,20 @@ def mode_projection(C, Q, V, t, plot=False, sanityChecks=False):
     basis = np.zeros((num_timesteps, n, n), dtype=np.complex128)  # Initialize the result matrix
 
     print('Getting "sandwich :)" (basis of eigenvectors)')
-    basis = time_multiply(P, V, method="einsum")
+    # basis = time_multiply(P, V, method="einsum")
+    basis = time_multiply(Q, V, method="einsum")
 
     if sanityChecks:
-        basis2 = time_multiply(P, V, method="forloop")
+        basis2 = time_multiply(Q, V, method="forloop")
         if np.allclose(basis, basis2, atol=1e-8):
            print("[ OK ] Multiplication is good")
         else: 
             raise Exception("Multiplication is bad")
 
     # Fourier coefficients storage (make sure this works correctly)
-    freqs = np.fft.fftfreq(len(t), t[1]-t[0])
+    freqs = np.fft.fftfreq(len(t), dt)
     freqs = np.fft.fftshift(freqs) #shift the frequencies
     ncomp= len(freqs)
-    fourier_coefficients = np.zeros((ncomp, n, n), dtype=complex)  # (n, n, t)
 
     out_spec_basis=C @ basis 
 
@@ -130,16 +135,38 @@ def mode_projection(C, Q, V, t, plot=False, sanityChecks=False):
         if np.allclose(out_spec_basis, out_spec_basis_sanity, atol=1e-8):
             print("[ OK ] Multiplication is good")
 
-    #each column is a mode, so each column has n elements that change with time (time series)
-    for j in range(n):  # Iterate over columns (modes)
-        for i in range(out_spec_basis.shape[1]):  # Iterate over rows
-            phij = out_spec_basis[:, i, j]  # Extract time series for each mode
-            #fft_coeffs = fft(phij) / num_timesteps  # Compute FFT and normalize
-            fft_coeffs = np.fft.fft(phij)
-            fft_coeffs = np.fft.fftshift(fft_coeffs)
-            # fft_coeffs = np.fft.rfft(phij)is it cheating to keep it without the real because im still using max()
-            
-            fourier_coefficients[:, i, j] = fft_coeffs  # Store Fourier coefficients
+    
+    # --- Riva
+    fourier_coefficients = np.fft.fft(out_spec_basis, axis=0) / out_spec_basis.shape[0]
+    # print('out_spc_shape', out_spec_basis)
+    # Sort harmonics from -n to +n.
+    fourier_coefficients = np.fft.fftshift(fourier_coefficients, axes=0)
+        # # --- Components by component
+    nt, ny, nx = out_spec_basis.shape
+        # for i in range(ny):  # Iterate over rows -state variables
+        #    for j in range(nx):  # Iterate over columns (modes)
+        #         phij = out_spec_basis[:, i, j]  # Extract time series for each state variable in mode
+        #         fft_coeffs = np.fft.fft(phij) / phij.shape[0]
+        #         fft_coeffs = np.fft.fftshift(fft_coeffs)
+        #         fourier_coefficients2[:,i,j] = fft_coeffs
+        # print('delta', fourier_coefficients   -fourier_coefficients2)
+        # print('debug')
+    if sanityChecks:
+        fourier_coefficients_sanity = np.zeros((ncomp, out_spec_basis.shape[1], n), dtype=complex)  # (n, n, t)
+        #each column is a mode, so each column has n elements that change with time (time series)
+        for i in range(out_spec_basis.shape[1]):  # Iterate over rows -state variables
+            for j in range(n):  # Iterate over columns (modes)
+                phij = out_spec_basis[:, i, j]  # Extract time series for each state variable in mode
+                #fft_coeffs = fft(phij) / num_timesteps  # Compute FFT and normalize
+                fft_coeffs = np.fft.fft(phij) / phij.shape[0]
+                fft_coeffs = np.fft.fftshift(fft_coeffs)
+                # fft_coeffs = np.fft.rfft(phij)is it cheating to keep it without the real because im still using max()
+                
+                fourier_coefficients_sanity[:, i, j] = fft_coeffs  # Store Fourier coefficients
+        if np.allclose(fourier_coefficients, fourier_coefficients_sanity, atol=1e-8):
+            print("[ OK ] Fourrier coefficients is good")
+
+    # print(fourier_coefficients[:, i, j])
 
     '''
     #after you get the fft of every element, you're supposed to get the norm of each mode.
@@ -187,7 +214,7 @@ def mode_projection(C, Q, V, t, plot=False, sanityChecks=False):
     #if plot:
         #plot_fft_norms(normalized, freqs, folder_name='Freq_cont')
         #plot_control_panel(t, Q, normalized, freqs, max_index, max_index_full, folder_name=None)
-    return max_values, max_col_indices, participation_factor
+    return max_values, max_col_indices, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs
 
 def check_real(vector, name="vector"):
     if not np.isrealobj(vector):

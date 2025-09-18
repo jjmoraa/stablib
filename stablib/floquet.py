@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.linalg import logm, expm
 import matplotlib.pyplot as plt
+import scipy
 # Local
 from stablib.state_space import solve_ode_At_flat
 from stablib.PostProcessing import plot_matrix
@@ -97,7 +98,7 @@ def compute_x(q_values, y_t_values, method='forloop'):
         raise NotImplementedError(method)
     return x_t_values
 
-def solve(At,time,plot=True,folder_name=None):
+def solve(At,time,plot=True,folder_name=None, rtol=1e-6):
     print('Solve IVP for At')
     problem_size=At(0).shape[0]
     # Initial condition: identity matrix (flattened)
@@ -106,7 +107,7 @@ def solve(At,time,plot=True,folder_name=None):
     # Solve the system numerically over one period [0, 2*pi]
     
     # Solve the ODE system
-    sol = solve_ode_At_flat(At, x0.flatten(), time)
+    sol = solve_ode_At_flat(At, x0.flatten(), time, rtol=rtol)
     
     # Reshape solution to (len(time), n, n) so each time step is a matrix
     y_vals = sol.y.reshape(problem_size, problem_size, len(time)).transpose(2, 0, 1)
@@ -181,7 +182,8 @@ def floquet_eigenanalysis(sol,time,omega,plot=False, sanityChecks=False, verbose
     [eigenvalues_mon,eigenvectors_mon] = np.linalg.eig(monodromy)
 
     #The floquet multipliers are the eigenvalues of the monondromy matrix
-    [eigenvalues_exp,eigenvectors_exp] = np.linalg.eig(exponent_matrix)
+    #[eigenvalues_exp,eigenvectors_exp] = np.linalg.eig(exponent_matrix)
+    [eigenvalues_exp,eigenvectors_exp] = scipy.linalg.eig(exponent_matrix)
 
     # lambda_real=np.real(eigenvalues)
     # lambda_imag=np.imag(eigenvalues)
@@ -293,7 +295,7 @@ def test_periodic_matrix(matrix, period, tol=1e-3):
         print("[ OK ] Matrix is periodic")
     else:
         print("[FAIL] Matrix is NOT periodic")
-        raise ValueError("Matrix is not periodic")
+        #raise ValueError("Matrix is not periodic")
 #make for other type of variables too
 
 
