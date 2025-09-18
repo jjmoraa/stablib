@@ -53,7 +53,12 @@ def A_fromMCK(M, C, K):
         [np.zeros_like(M), np.eye(M.shape[0])],
         [-mass_inv @ K, -mass_inv @ C]]) 
 
-def ro_riva(At):
+def ro_riva(time_stm,At, C, rtol=1e-6, period=1):
+
+    A0 = At(0)
+    nx = A0.shape[0]
+    tm0 = np.eye(nx)
+
     # Integrate Phi' = A @ Phi.
     sol_stm = solve_ivp(
         fun=lambda t, stm: (At(t) @ stm.reshape(nx, nx)).reshape(-1),
@@ -61,7 +66,7 @@ def ro_riva(At):
         y0=tm0.reshape(-1),
         t_eval=time_stm,
         vectorized=True,
-        rtol=1e-6,
+        rtol=rtol,
     )
 
     # Plot state transition matrix.
@@ -107,11 +112,11 @@ def ro_riva(At):
         
         shift = np.arange(-max_shift, +max_shift)
     shift0 = max_shift  # n = 0.
-    print(f'T is of length({len(time_stm)})')
-    shift2 = np.fft.fftfreq(len(time_stm)-1)*(len(time_stm)-1)
-    shift3=shift2.copy()
-    shift3.sort()
-    print('')
+    #print(f'T is of length({len(time_stm)})')
+    #shift2 = np.fft.fftfreq(len(time_stm)-1)*(len(time_stm)-1)
+    #shift3=shift2.copy()
+    #shift3.sort()
+    #print('')
     # Compute characteristic exponents.
 
     # eta is ordered as:
@@ -120,7 +125,6 @@ def ro_riva(At):
     abs_theta = np.abs(theta)
     ang_theta = np.angle(theta)
     eta = (np.log(abs_theta) + 1j * ang_theta)[np.newaxis, :] / period + 2j * np.pi / period * shift[:, np.newaxis]
-    print('hello')
     # Plot characteristic exponents.
     if False:
         fig, ax = plt.subplots()
@@ -160,7 +164,7 @@ def ro_riva(At):
         P[k, :, :] = stm[:, :, k] @ S * np.exp(-eta[shift0, :] * time_stm[k]) @ invS @ P0
 
     # Compute Xi.
-    Xi = out_mat[np.newaxis, :, :] @ P @ V[np.newaxis, :, :]
+    Xi = C[np.newaxis, :, :] @ P @ V[np.newaxis, :, :]
 
     # Expand Xi in Fourier series. psi contains the mode shapes, and is ordered as:
     # axis 0: harmonics.
@@ -171,8 +175,9 @@ def ro_riva(At):
     # Sort harmonics from -n to +n.
     psi = np.fft.fftshift(psi, axes=0)
 
-    freqs = np.fft.fftfreq(len(t), dt)
-    freqs = np.fft.fftshift(freqs) #shift the frequencies
+    #dt = time_stm[1] - time_stm[0]
+#     freqs = np.fft.fftfreq(len(t), dt)
+#     freqs = np.fft.fftshift(freqs) #shift the frequencies
 
     # Compute mode shapes norm.
     participation = np.linalg.norm(psi, ord=2, axis=1)
@@ -182,6 +187,19 @@ def ro_riva(At):
 
     # Find the principal harmonic for each mode.
     n_principal = np.argmax(participation, axis=0)
+
+    f0_m1 = np.full(nx, np.nan)
+    f0_principal = f0_m1.copy()
+    f0_p1 = f0_m1.copy()
+    for ix in range(nx):
+        # We skip modes with negative damping frequency.
+        if damped_frequency[n_principal[ix], ix] < 0.0:
+            continue
+        f0_m1[ix] = natural_frequency[n_principal[ix]-1, ix]
+        f0_principal[ix] = natural_frequency[n_principal[ix], ix]
+        f0_p1[ix] = natural_frequency[n_principal[ix]+1, ix]
+
+
 
     d = dict()
     d['R'] = R
@@ -198,7 +216,11 @@ def ro_riva(At):
     d['damped_frequency'] = damped_frequency
     d['natural_frequency'] = natural_frequency
     d['psi'] = psi
+    #d['freqs'] = freqs
     d['participation'] = participation
+    d['f_0_principal'] = f0_principal
+    d['f_0_m1']        = f0_m1
+    d['f_0_p1']        = f0_p1
     return d
     
     
@@ -344,7 +366,7 @@ if __name__ == "__main__":
 
         tm0 = np.eye(nx)
         
-        d = ro_riva(At)
+        d = ro_riva(time_stm, At, out_mat, rtol=1e-6, period=period)
 
         n_principal = d['n_principal']
         damped_frequency = d['damped_frequency']
@@ -361,19 +383,19 @@ if __name__ == "__main__":
             campbell_p1[iom, ix] = natural_frequency[n_principal[ix]+1, ix]
 
 
-# Plot Campbell diagram.
-fig, ax = plt.subplots()
-ax.set_xlabel("Rotor speed [rpm]")
-ax.set_ylabel("Natural frequency [Hz]")
-ax.grid(True)
-ax.set_yticks(np.arange(0.0, 2.1, 0.25))
-ax.set_ylim(0.0, 1.5)
-ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_m1.shape), campbell_m1, color="C1", label="-1")
-ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_principal.shape), campbell_principal, color="C0", label="Principal")
-ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_p1.shape), campbell_p1, color="C2", label="+1")
-ax.legend()
+    # Plot Campbell diagram.
+    fig, ax = plt.subplots()
+    ax.set_xlabel("Rotor speed [rpm]")
+    ax.set_ylabel("Natural frequency [Hz]")
+    ax.grid(True)
+    ax.set_yticks(np.arange(0.0, 2.1, 0.25))
+    ax.set_ylim(0.0, 1.5)
+    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_m1.shape), campbell_m1, color="C1", label="-1")
+    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_principal.shape), campbell_principal, color="C0", label="Principal")
+    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_p1.shape), campbell_p1, color="C2", label="+1")
+    ax.legend()
 
-plt.show()
+    plt.show()
 
     # And here is the one that I used to verify the FFT. One day I should put it on my website 😅
 

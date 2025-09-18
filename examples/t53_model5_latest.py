@@ -36,13 +36,16 @@ from stablib.state_space import A_fromMCK
 from stablib.floquet import  solve, floquet_eigenanalysis, test_periodic
 from stablib.modeProjection import mode_projection
 from stablib.PostProcessing import plot_freq_heatmap
+
 # Define the mass, damping and stiffness matrices
 
-# from t53_ronnieFloquet_riva import ro_riva
+from t53_model5_riva import ro_riva
 
 
 # --- Script parameters
+RivaOnly=False
 sanityChecks = True
+sanityChecks = False
 plotIVP = False
 plotFloquet = False
 plotModeProj = False
@@ -51,9 +54,10 @@ rtol=1e-4
 def vectors_equal_up_to_sign(a, b, rtol=1e-5, atol=1e-8):
     return np.allclose(a, b, rtol=rtol, atol=atol) or np.allclose(a, -b, rtol=rtol, atol=atol)
 
-def ro_riva(time_stm,At, C, rtol=1e-6):
+def ro_riva_local(time_stm,At, C, rtol=1e-6):
 
-    nx=10
+    A0 = At(0)
+    nx = A0.shape[0]
     tm0 = np.eye(nx)
 
     # Integrate Phi' = A @ Phi.
@@ -107,6 +111,11 @@ def ro_riva(time_stm,At, C, rtol=1e-6):
 
     shift = np.arange(-max_shift, +max_shift)
     shift0 = max_shift  # n = 0.
+    #print(f'T is of length({len(time_stm)})')
+    #shift2 = np.fft.fftfreq(len(time_stm)-1)*(len(time_stm)-1)
+    #shift3=shift2.copy()
+    #shift3.sort()
+    #print('')
     # Compute characteristic exponents.
 
     # eta is ordered as:
@@ -166,9 +175,9 @@ def ro_riva(time_stm,At, C, rtol=1e-6):
     # Sort harmonics from -n to +n.
     psi = np.fft.fftshift(psi, axes=0)
 
-    dt = time_stm[1] - time_stm[0]
-    freqs = np.fft.fftfreq(len(time_stm)-1, dt)
-    freqs = np.fft.fftshift(freqs) #shift the frequencies
+    #dt = time_stm[1] - time_stm[0]
+    #freqs = np.fft.fftfreq(len(time_stm)-1, dt)
+    #freqs = np.fft.fftshift(freqs) #shift the frequencies
 
     # Compute mode shapes norm.
     participation = np.linalg.norm(psi, ord=2, axis=1)
@@ -178,6 +187,22 @@ def ro_riva(time_stm,At, C, rtol=1e-6):
 
     # Find the principal harmonic for each mode.
     n_principal = np.argmax(participation, axis=0)
+
+
+
+    f0_m1 = np.full(nx, np.nan)
+    f0_principal = f0_m1.copy()
+    f0_p1 = f0_m1.copy()
+    for ix in range(nx):
+        # We skip modes with negative damping frequency.
+        if damped_frequency[n_principal[ix], ix] < 0.0:
+            continue
+        f0_m1[ix] = natural_frequency[n_principal[ix]-1, ix]
+        f0_principal[ix] = natural_frequency[n_principal[ix], ix]
+        f0_p1[ix] = natural_frequency[n_principal[ix]+1, ix]
+
+
+
 
     d = dict()
     d['R'] = R
@@ -196,6 +221,9 @@ def ro_riva(time_stm,At, C, rtol=1e-6):
     d['psi'] = psi
     d['freqs'] = freqs
     d['participation'] = participation
+    d['f_0_principal'] = f0_principal
+    d['f_0_m1']        = f0_m1
+    d['f_0_p1']        = f0_p1
 
     return d
 
@@ -210,6 +238,7 @@ ky = 200000
 
 
 omegas = np.linspace(0.1, 1, 10) #should be (0.1, 1, 100)
+omegas = np.linspace(0.1, 1, 3) #should be (0.1, 1, 100)
 
 
 # Storage...
@@ -219,9 +248,14 @@ mode_frequencies=[]
 mode_decay=[]
 damping_ratio=[]
 multipliers_for_range=[]
-f_d_for_range=[]
-f_0_for_range=[]
 zeta_for_range=[]
+vf_d = []
+vf_0 = []
+
+vf_d_riva = []
+vf_0_riva = []
+vf_0_m1_riva = []
+vf_0_p1_riva = []
 
 for iom, omega in enumerate(omegas):
     print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ------------------------')
@@ -245,7 +279,7 @@ for iom, omega in enumerate(omegas):
     C[0, 3] = 1.0
     C[1, 4] = 1.0
     with Timer('riva'):
-        riva = ro_riva(time, At, C, rtol=rtol)
+        riva = ro_riva(time, At, C, rtol=rtol, period=period)
     # d['R'] = R
     # d['P'] = P
     # d['V'] = V
@@ -273,140 +307,147 @@ for iom, omega in enumerate(omegas):
     n_principal = riva['n_principal']
     psi = riva['psi']
     participation = riva['participation']
-    f_d = riva['damped_frequency']
-    natural_frequency = riva['natural_frequency']
-    freqs_riva = riva['freqs']
+    f_d_riva = riva['damped_frequency']
+    f_0_riva = riva['natural_frequency']
+
+    # Store
+    vf_d_riva.append(f_d_riva)
+    vf_0_riva.append(riva['f_0_principal'])
+    vf_0_m1_riva.append(riva['f_0_m1'])
+    vf_0_p1_riva.append(riva['f_0_p1'])
+    #print('f0',f_0_riva, '(riva)')
+    #import pdb; pdb.set_trace()
 
 
+    if not RivaOnly:
+
+        if sanityChecks:
+            test_periodic(At, period, tol=1e-3)
+        
+        with Timer('solve-ivp'):
+            sol=solve(At,time,plot=plotIVP, rtol=rtol)
+        print('Solution is finished')
+
+        if np.allclose(sol.y, sol_stm.y, atol=1e-3):
+            print('Solution is close')
+        else:
+            print('Solution is NOT close')
 
 
-    if sanityChecks:
-        test_periodic(At, period, tol=1e-3)
-    
-    with Timer('solve-ivp'):
-        sol=solve(At,time,plot=plotIVP, rtol=rtol)
-    print('Solution is finished')
+        with Timer('floquet_eig'):
+            [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=plotFloquet, sanityChecks=sanityChecks)
+        eigenvalues_for_range.append(eigenvalues_exp)
+        
+        # CHECKS against riva
+        if np.allclose(monodromy, monodromy_riva, atol=1e-3):
+            print('[ OK ] monodromy is close')
+        else:
+            print('monodromy is NOT close')
 
-    if np.allclose(sol.y, sol_stm.y, atol=1e-3):
-        print('Solution is close')
-    else:
-        print('Solution is NOT close')
+        if np.allclose(eigenvalues_mon, theta, atol=1e-3):
+            print('[ OK ] mon eigenvalues is close')
+        else:
+            print('mon eigenvalues is NOT close')
 
+        if np.allclose(eigenvectors_mon, V, atol=1e-3):
+            print('[ OK ] mon eigenvectors is close')
+        else:
+            print('mon eigenvectors is NOT close')
 
-    with Timer('floquet_eig'):
-        [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] = floquet_eigenanalysis(sol,time,omega, plot=plotFloquet, sanityChecks=sanityChecks)
-    eigenvalues_for_range.append(eigenvalues_exp)
-    
-    # CHECKS against riva
-    if np.allclose(monodromy, monodromy_riva, atol=1e-3):
-        print('[ OK ] monodromy is close')
-    else:
-        print('monodromy is NOT close')
+        if np.allclose(eigenvalues_exp, eta[5000,:], atol=1e-1):
+            print('[ OK ] exp eigenvalues is close')
+        else:
+            print('WARNING: exp eigenvalues is NOT close')
 
-    if np.allclose(eigenvalues_mon, theta, atol=1e-3):
-        print('[ OK ] mon eigenvalues is close')
-    else:
-        print('mon eigenvalues is NOT close')
+        SS = eigenvectors_exp
 
-    if np.allclose(eigenvectors_mon, V, atol=1e-3):
-        print('[ OK ] mon eigenvectors is close')
-    else:
-        print('mon eigenvectors is NOT close')
-
-    if np.allclose(eigenvalues_exp, eta[5000,:], atol=1e-1):
-        print('[ OK ] exp eigenvalues is close')
-    else:
-        print('WARNING: exp eigenvalues is NOT close')
-
-    SS = eigenvectors_exp
-
-    # Code snippet to test Q components against B (From GPT)
-    # import matplotlib.pyplot as plt, numpy as np; 
-    # T=min(q_values.shape[0],P.shape[0]); t=np.arange(T); i,j=0,0
-    # plt.plot(t,q_values[:T,i,j].real,'b-',label="q real"); 
-    # plt.plot(t,q_values[:T,i,j].imag,'b--',label="q imag"); 
-    # plt.plot(t,P[:T,i,j].real,'r-',label="P real"); 
-    # plt.plot(t,P[:T,i,j].imag,'r--',label="P imag"); 
-    # plt.xlabel("time"); plt.ylabel("value"); plt.legend(); plt.grid(True); plt.show()
+        # Code snippet to test Q components against B (From GPT)
+        # import matplotlib.pyplot as plt, numpy as np; 
+        # T=min(q_values.shape[0],P.shape[0]); t=np.arange(T); i,j=0,0
+        # plt.plot(t,q_values[:T,i,j].real,'b-',label="q real"); 
+        # plt.plot(t,q_values[:T,i,j].imag,'b--',label="q imag"); 
+        # plt.plot(t,P[:T,i,j].real,'r-',label="P real"); 
+        # plt.plot(t,P[:T,i,j].imag,'r--',label="P imag"); 
+        # plt.xlabel("time"); plt.ylabel("value"); plt.legend(); plt.grid(True); plt.show()
 
 
-    if np.allclose(q_values[:-1,:,:], P, atol=1e-3):
-        print('[ OK ] q values is close - P for RIVA - ')
-    else:
-        print('exp q values is NOT close - P for RIVA -')
+        if np.allclose(q_values[:-1,:,:], P, atol=1e-3):
+            print('[ OK ] q values is close - P for RIVA - ')
+        else:
+            print('exp q values is NOT close - P for RIVA -')
 
-    with Timer('mode_proj'):
-        [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection(C, q_values, eigenvectors_mon, time, plot=plotModeProj, sanityChecks=sanityChecks)
+        with Timer('mode_proj'):
+            [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection(C, q_values, eigenvectors_mon, time, plot=plotModeProj, sanityChecks=sanityChecks)
 
 
-    # iy=0; ix=0; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=0; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=1; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=1; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=2; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=2; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=3; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=3; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=4; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=4; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=5; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=5; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=6; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=6; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=7; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=7; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=8; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=8; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=0; ix=9; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
-    # iy=1; ix=9; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=0; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=0; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=1; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=1; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=2; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=2; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=3; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=3; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=4; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=4; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=5; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=5; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=6; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=6; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=7; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=7; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=8; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=8; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=0; ix=9; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
+        # iy=1; ix=9; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
 
-    if vectors_equal_up_to_sign(out_spec_basis, Xi_riva):
-        print('[ OK ] Output specific basis is close')
-    else:
-        print('Output specific basis is NOT close')
+        if vectors_equal_up_to_sign(out_spec_basis, Xi_riva):
+            print('[ OK ] Output specific basis is close')
+        else:
+            print('Output specific basis is NOT close')
 
-    if vectors_equal_up_to_sign(fourier_coefficients, psi): #this has an issue
-        print('[ OK ] fourier coefficients is close')
-    else:
-        print('fourier coefficients is NOT close')
+        if vectors_equal_up_to_sign(fourier_coefficients, psi): #this has an issue
+            print('[ OK ] fourier coefficients is close')
+        else:
+            print('fourier coefficients is NOT close')
 
-    if vectors_equal_up_to_sign(participation_factor, participation):
-        print('[ OK ] participation factor is close')
-    else:
-        print('participation factor is NOT close')
+        if vectors_equal_up_to_sign(participation_factor, participation):
+            print('[ OK ] participation factor is close')
+        else:
+            print('participation factor is NOT close')
 
-    if vectors_equal_up_to_sign(max_index, n_principal-5000):
-        print('[ OK ] strongest harmonic is close')
-    else:
-        print('strongest harmonic is NOT close')
+        if vectors_equal_up_to_sign(max_index, n_principal-5000):
+            print('[ OK ] strongest harmonic is close')
+        else:
+            print('strongest harmonic is NOT close')
 
-    eigenvalues_exp_corrected = eigenvalues_exp + 1j*max_index*(omega)
+        eigenvalues_exp_corrected = eigenvalues_exp + 1j*max_index*(omega)
 
-    if vectors_equal_up_to_sign(max_index, n_principal-5000):
-        print('[ OK ] strongest harmonic is close')
-    else:
-        print('strongest harmonic is NOT close')
+        if vectors_equal_up_to_sign(max_index, n_principal-5000):
+            print('[ OK ] strongest harmonic is close')
+        else:
+            print('strongest harmonic is NOT close')
 
-    # Compute frequency and damping.
-    # natural_frequency = np.abs(eigenvalues_exp_corrected)  # [rad/s]
-    # damping_ratio = -eigenvalues_exp_corrected.real / natural_frequency  # [-]
-    # natural_frequency_hz = natural_frequency * 2 * np.pi  # [Hz]
-    # damped_frequency = np.abs(eigenvalues_exp_corrected.imag) / (2 * np.pi)  # [Hz]
+        # Compute frequency and damping.
+        # natural_frequency = np.abs(eigenvalues_exp_corrected)  # [rad/s]
+        # damping_ratio = -eigenvalues_exp_corrected.real / natural_frequency  # [-]
+        # natural_frequency_hz = natural_frequency * 2 * np.pi  # [Hz]
+        # damped_frequency = np.abs(eigenvalues_exp_corrected.imag) / (2 * np.pi)  # [Hz]
 
-    # plot_freq_heatmap(participation_factor)
-    participation_factor_for_range.append(participation_factor)
+        # plot_freq_heatmap(participation_factor)
+        participation_factor_for_range.append(participation_factor)
 
-    omega_d = np.imag(eigenvalues_exp_corrected)
-    f_d = omega_d / (2*np.pi)
-    omega_0 = np.abs(eigenvalues_exp_corrected)
-    f_0 = omega_0 / (2*np.pi)
-    print('f0',f_0)
-    zeta= -np.real(eigenvalues_exp_corrected)/omega_0
+        omega_d = np.imag(eigenvalues_exp_corrected)
+        f_d = omega_d / (2*np.pi)
+        omega_0 = np.abs(eigenvalues_exp_corrected)
+        f_0 = omega_0 / (2*np.pi)
+        print('f0',f_0)
+        zeta= -np.real(eigenvalues_exp_corrected)/omega_0
 
-    f_d_for_range.append(f_d)
-    f_0_for_range.append(f_0)
-    zeta_for_range.append(zeta)
-    
+        vf_d.append(f_d)
+        vf_0.append(f_0)
+        zeta_for_range.append(zeta)
+        
 
 #plot_freq_heatmap(participation_factor_for_range)
 
@@ -414,22 +455,33 @@ for iom, omega in enumerate(omegas):
 # Convert omegas to Hz for x-axis
 freqs_Hz = omegas / (2 * np.pi)
 
-fig, ax = plt.subplots(figsize=(8, 5))
 
 # Iterate over the modes by using a list of lists (since we have appended modes)
-for mode_idx in range(len(f_0_for_range[0])):  # number of modes in each result
-    mode_freqs = [f_0_for_range[i][mode_idx] for i in range(len(f_0_for_range))]
-    ax.plot(freqs_Hz, mode_freqs, 'o', label=f'Mode {mode_idx + 1}')
+fig, ax = plt.subplots(figsize=(8, 5))
+for mode_idx in range(len(vf_0_riva[0])):  # number of modes in each result
+    mode_freqs_riva = [vf_0_riva[i][mode_idx] for i in range(len(vf_0_riva))]
+    ax.plot(freqs_Hz, mode_freqs_riva, 'o', label=f'Mode {mode_idx + 1}')
+    ax.set_xlabel('Rotor speed [Hz]')
+    ax.set_ylabel('Modal frequency [Hz]')
+    ax.set_title('Campbell Diagram (Floquet)')
+    ax.grid(True)
+    ax.legend(loc='best', fontsize='small')
+    plt.tight_layout()
 
-ax.set_xlabel('Rotor speed [Hz]')
-ax.set_ylabel('Modal frequency [Hz]')
-ax.set_title('Campbell Diagram (Floquet)')
-ax.grid(True)
-ax.legend(loc='best', fontsize='small')
-plt.tight_layout()
+if not RivaOnly:
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for mode_idx in range(len(vf_0[0])):  # number of modes in each result
+        mode_freqs = [vf_0[i][mode_idx] for i in range(len(vf_0))]
+        ax.plot(freqs_Hz, mode_freqs, 'o', label=f'Mode {mode_idx + 1}')
+    ax.set_xlabel('Rotor speed [Hz]')
+    ax.set_ylabel('Modal frequency [Hz]')
+    ax.set_title('Campbell Diagram (Floquet)')
+    ax.grid(True)
+    ax.legend(loc='best', fontsize='small')
+    plt.tight_layout()
 # filename = (datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), f"t53_model5_Campbell.png")
-scriptDir = os.path.dirname(os.path.abspath(__file__))
-plt.savefig(os.path.join(scriptDir, f"t53_model5_Campbell_ltest.png"))
+# scriptDir = os.path.dirname(os.path.abspath(__file__))
+# plt.savefig(os.path.join(scriptDir, f"t53_model5_Campbell_ltest.png"))
 
 plt.show()
 plt.close()
