@@ -2,58 +2,16 @@
 # %% Import.
 
 import numpy as np
-from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from scipy.linalg import eig, inv, solve, expm
-from scipy.signal import welch
 
-plt.close("all")
-
-# %% Analytical model.
-
-def phi(omega,t):
-    return np.array([omega*t,omega*t+2*np.pi/3,omega*t+4*np.pi/3])
-
-def mass(M, m, l, omega, t):
-    phi_vals = phi(omega, t)
-    return np.array([
-        [m * l**2, 0, 0, m * l * np.cos(phi_vals[0]), -m * l * np.sin(phi_vals[0])],
-        [0, m * l**2, 0, m * l * np.cos(phi_vals[1]), -m * l * np.sin(phi_vals[1])],
-        [0, 0, m * l**2, m * l * np.cos(phi_vals[2]), -m * l * np.sin(phi_vals[2])],
-        [m * l * np.cos(phi_vals[0]), -m * l * np.cos(phi_vals[1]), -m * l * np.cos(phi_vals[2]), M + 3 * m, 0],
-        [-m * l * np.sin(phi_vals[0]), -m * l * np.sin(phi_vals[1]), -m * l * np.sin(phi_vals[2]), 0, M + 3 * m]
-    ])
-
-def damping(omega, t):
-    phi_vals = phi(omega, t)
-    cb = 0.0
-    ct = 0.0
-    return np.array([
-        [cb, 0, 0, 0, 0],
-        [0, cb, 0, 0, 0],
-        [0, 0, cb, 0, 0],
-        [-np.sin(phi_vals[0]), -np.sin(phi_vals[1]), -np.sin(phi_vals[2]), ct, 0],
-        [-np.cos(phi_vals[0]), -np.cos(phi_vals[1]), -np.cos(phi_vals[2]), 0, ct]
-    ])
-
-def stiffness(edgNatFreq_rad, m, l, kx, ky, omega, t):
-    phi_vals = phi(omega, t)
-    return np.array([
-        [m * (l**2) * (edgNatFreq_rad**2), 0, 0, 0, 0],
-        [0, m * (l**2) * (edgNatFreq_rad**2), 0, 0, 0],
-        [0, 0, m * (l**2) * (edgNatFreq_rad**2), 0, 0],
-        [-m * l * (omega**2) * np.cos(phi_vals[0]), -m * l * (omega**2) * np.cos(phi_vals[1]), -m * l * (omega**2) * np.cos(phi_vals[2]), kx, 0],
-        [m * l * (omega**2) * np.sin(phi_vals[0]), m * l * (omega**2) * np.sin(phi_vals[1]), m * l * (omega**2) * np.sin(phi_vals[2]), 0, ky]
-
-    ])
-
-def A_fromMCK(M, C, K):
-    mass_inv = np.linalg.inv(M)
-    return np.block([
-        [np.zeros_like(M), np.eye(M.shape[0])],
-        [-mass_inv @ K, -mass_inv @ C]]) 
+from stablib.models.model5DOFs import mass, damping, stiffness
+from stablib.state_space import A_fromMCK
+from stablib.models.model5DOFs import mass, damping, stiffness
 
 def ro_riva(time_stm,At, C, rtol=1e-6, period=1):
+
+    from scipy.integrate import solve_ivp
+    from scipy.linalg import eig, inv, solve, expm
 
     A0 = At(0)
     nx = A0.shape[0]
@@ -225,6 +183,8 @@ def ro_riva(time_stm,At, C, rtol=1e-6, period=1):
     
     
 if __name__ == "__main__":
+    from scipy.integrate import solve_ivp
+    from scipy.signal import welch
 
     # --- Parameters
     m = 500   # Blade mass
@@ -232,10 +192,11 @@ if __name__ == "__main__":
     M = 50000 # Nacelle mass
     edgNatFreq = 0.8 * 2 *np.pi  # Edgewise frequency in rad
     kx = 200000 # Support stiffness
-    ky = 250000
+    ky = 200000
     # ky = kx
     omegas_rpm = np.linspace(0.1, 30.0, 40) # Rotor speed.
     omegas = omegas_rpm * np.pi / 30.0  # Rotor speed [rad/s]
+    omegas = np.linspace(0.1, 1, 10)
     nx = 10  # Number of states.
 
     # %% Simulation.
@@ -385,14 +346,14 @@ if __name__ == "__main__":
 
     # Plot Campbell diagram.
     fig, ax = plt.subplots()
-    ax.set_xlabel("Rotor speed [rpm]")
+    ax.set_xlabel("Rotor speed [rad/s]")
     ax.set_ylabel("Natural frequency [Hz]")
     ax.grid(True)
     ax.set_yticks(np.arange(0.0, 2.1, 0.25))
     ax.set_ylim(0.0, 1.5)
-    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_m1.shape), campbell_m1, color="C1", label="-1")
-    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_principal.shape), campbell_principal, color="C0", label="Principal")
-    ax.scatter(np.broadcast_to(omegas_rpm[:, np.newaxis], campbell_p1.shape), campbell_p1, color="C2", label="+1")
+    ax.scatter(np.broadcast_to(omegas[:, np.newaxis], campbell_m1.shape), campbell_m1, color="C1", label="-1")
+    ax.scatter(np.broadcast_to(omegas[:, np.newaxis], campbell_principal.shape), campbell_principal, color="C0", label="Principal")
+    ax.scatter(np.broadcast_to(omegas[:, np.newaxis], campbell_p1.shape), campbell_p1, color="C2", label="+1")
     ax.legend()
 
     plt.show()
