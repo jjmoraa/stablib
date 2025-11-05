@@ -8,7 +8,7 @@ from stablib.models.model5DOFs import mass, damping, stiffness
 from stablib.state_space import A_fromMCK
 from stablib.models.model5DOFs import mass, damping, stiffness
 
-def ro_riva(time_stm,At, C, rtol=1e-6, period=1):
+def ro_riva(time_stm, At, C, rtol=1e-6, period=1):
 
     from scipy.integrate import solve_ivp
     from scipy.linalg import eig, inv, solve, expm

@@ -228,17 +228,20 @@ def ro_riva_local(time_stm,At, C, rtol=1e-6):
     return d
 
 # --- Define constants
-m = 500
-l = 30
-M = 50000
-edgNatFreq_hz = 0.8  # Edgewise frequency in Hz
+m = 1000
+l = 100
+M = 200000
+edgNatFreq_hz = 0.7  # Edgewise frequency in Hz
 edgNatFreq_rad = edgNatFreq_hz * 2 * np.pi  # Convert to rad/s
 kx = 200000
-ky = 200000
+ky = 350000
 
+
+# f_expected=[np.sqrt(kx/(M+3*m)) /(2*np.pi), edgNatFreq_hz]
+f_expected=[edgNatFreq_hz]
 
 omegas = np.linspace(0.1, 1, 10) #should be (0.1, 1, 100)
-omegas = np.linspace(0.1, 1, 3) #should be (0.1, 1, 100)
+# omegas = np.array([0.325]) #should be (0.1, 1, 100)
 
 
 # Storage...
@@ -257,14 +260,14 @@ vf_0_riva = []
 vf_0_m1_riva = []
 vf_0_p1_riva = []
 
-for iom, omega in enumerate(omegas):
+for iom, omega in enumerate(omegas): #rads
     print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ------------------------')
-    period=2*np.pi/omega
+    period=2*np.pi/omega # seconds
     # Figuring out Number of points per period
     base_points=5000
     min_points=1000
     #num_points = int(min_points + (base_points - min_points)  * (1-np.log(omega / omegas[0]) / np.log(omegas[-1] / omegas[0])))#check this oneliner
-    time=np.linspace(0.0, 1000.0, 10001)
+    time=np.linspace(0.0, period, 10001)
     # mass_matrix=mass(m, l, omega, time)
     # damping_matrix=damping(omega, time)
     # stiffness_matrix=stiffness(edgNatFreq_rad, m, l, kx, ky, omega, time)
@@ -275,9 +278,9 @@ for iom, omega in enumerate(omegas):
     At = lambda t: A_fromMCK(Mt(t), Ct(t), Kt(t) )
     
     C = np.zeros((2, At(0).shape[0]))
-    
-    C[0, 3] = 1.0
-    C[1, 4] = 1.0
+    C = np.eye(10)
+    #C[0, 3] = 1.0
+    #C[1, 4] = 1.0
     with Timer('riva'):
         riva = ro_riva(time, At, C, rtol=rtol, period=period)
     # d['R'] = R
@@ -342,22 +345,22 @@ for iom, omega in enumerate(omegas):
         if np.allclose(monodromy, monodromy_riva, atol=1e-3):
             print('[ OK ] monodromy is close')
         else:
-            print('monodromy is NOT close')
+            print('[ FAIL ] monodromy is NOT close')
 
         if np.allclose(eigenvalues_mon, theta, atol=1e-3):
             print('[ OK ] mon eigenvalues is close')
         else:
-            print('mon eigenvalues is NOT close')
+            print('[ FAIL ] mon eigenvalues is NOT close')
 
         if np.allclose(eigenvectors_mon, V, atol=1e-3):
             print('[ OK ] mon eigenvectors is close')
         else:
-            print('mon eigenvectors is NOT close')
+            print('[ FAIL ] mon eigenvectors is NOT close')
 
         if np.allclose(eigenvalues_exp, eta[5000,:], atol=1e-1):
             print('[ OK ] exp eigenvalues is close')
         else:
-            print('WARNING: exp eigenvalues is NOT close')
+            print('[ FAIL ] exp eigenvalues is NOT close')
 
         SS = eigenvectors_exp
 
@@ -374,10 +377,10 @@ for iom, omega in enumerate(omegas):
         if np.allclose(q_values[:-1,:,:], P, atol=1e-3):
             print('[ OK ] q values is close - P for RIVA - ')
         else:
-            print('exp q values is NOT close - P for RIVA -')
+            print('[ FAIL ] exp q values is NOT close - P for RIVA -')
 
         with Timer('mode_proj'):
-            [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection(C, q_values, eigenvectors_mon, time, plot=plotModeProj, sanityChecks=sanityChecks)
+            [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection(C, q_values, eigenvectors_exp, time, plot=plotModeProj, sanityChecks=sanityChecks)
 
 
         # iy=0; ix=0; plt.figure(); plt.plot(freqs, fourier_coefficients[:,iy, ix]); plt.plot(freqs_riva, psi[:,iy, ix], '--'); plt.show()
@@ -404,29 +407,29 @@ for iom, omega in enumerate(omegas):
         if vectors_equal_up_to_sign(out_spec_basis, Xi_riva):
             print('[ OK ] Output specific basis is close')
         else:
-            print('Output specific basis is NOT close')
+            print('[ FAIL ] Output specific basis is NOT close')
 
         if vectors_equal_up_to_sign(fourier_coefficients, psi): #this has an issue
             print('[ OK ] fourier coefficients is close')
         else:
-            print('fourier coefficients is NOT close')
+            print('[ FAIL ] fourier coefficients is NOT close')
 
         if vectors_equal_up_to_sign(participation_factor, participation):
             print('[ OK ] participation factor is close')
         else:
-            print('participation factor is NOT close')
+            print('[ FAIL ] participation factor is NOT close')
 
         if vectors_equal_up_to_sign(max_index, n_principal-5000):
-            print('[ OK ] strongest harmonic is close')
+            print('[ OK ] max index is close')
         else:
-            print('strongest harmonic is NOT close')
+            print('[ FAIL ] max index is NOT close')
 
-        eigenvalues_exp_corrected = eigenvalues_exp + 1j*max_index*(omega)
+        eigenvalues_exp_corrected = eigenvalues_exp + 1j*(max_index)*(omega)
 
-        if vectors_equal_up_to_sign(max_index, n_principal-5000):
-            print('[ OK ] strongest harmonic is close')
-        else:
-            print('strongest harmonic is NOT close')
+        # if vectors_equal_up_to_sign(eigenvalues_exp_corrected, n_principal-5000):
+        #     print('[ OK ] strongest harmonic is close')
+        # else:
+        #     print('strongest harmonic is NOT close')
 
         # Compute frequency and damping.
         # natural_frequency = np.abs(eigenvalues_exp_corrected)  # [rad/s]
@@ -466,19 +469,40 @@ for mode_idx in range(len(vf_0_riva[0])):  # number of modes in each result
     ax.set_title('Campbell Diagram (Floquet)')
     ax.grid(True)
     ax.legend(loc='best', fontsize='small')
-    plt.tight_layout()
+for f0 in f_expected:
+    ax.plot(freqs_Hz, f0+freqs_Hz, 'k--')
+    ax.plot(freqs_Hz, f0-freqs_Hz, 'k--')
+plt.tight_layout()
 
 if not RivaOnly:
-    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # --- Plot Campbell
+    fig,ax = plt.subplots(1, 1, sharey=False, figsize=(6.4,4.8))
+    fig.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.11, hspace=0.20, wspace=0.20)
+
+    COLRS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+
+    #fig, ax = plt.subplots(figsize=(8, 5))
     for mode_idx in range(len(vf_0[0])):  # number of modes in each result
-        mode_freqs = [vf_0[i][mode_idx] for i in range(len(vf_0))]
-        ax.plot(freqs_Hz, mode_freqs, 'o', label=f'Mode {mode_idx + 1}')
+        mode_freqs = np.array([vf_0[i][mode_idx] for i in range(len(vf_0))])
+        b1 = np.logical_and(mode_freqs<0.17, mode_freqs>0.1 )
+        b2 = np.logical_and(mode_freqs<0.23, mode_freqs>0.18 )
+        b3 = np.logical_and(mode_freqs<1.0, mode_freqs>0.6 )
+        ax.plot(freqs_Hz[b1], mode_freqs[b1], 'o', c=COLRS[0]) #, label=f'Mode {mode_idx + 1}')
+        ax.plot(freqs_Hz[b2], mode_freqs[b2], 'o', c=COLRS[1])#, label=f'Mode {mode_idx + 1}')
+        ax.plot(freqs_Hz[b3], mode_freqs[b3], 'o', c=COLRS[2])# label=f'Mode {mode_idx + 1}')
     ax.set_xlabel('Rotor speed [Hz]')
     ax.set_ylabel('Modal frequency [Hz]')
     ax.set_title('Campbell Diagram (Floquet)')
     ax.grid(True)
     ax.legend(loc='best', fontsize='small')
-    plt.tight_layout()
+    for f0 in f_expected:
+        ax.plot(freqs_Hz, f0+freqs_Hz, 'k--')
+        ax.plot(freqs_Hz, f0-freqs_Hz, 'k--')
+    #plt.tight_layout()
+    ax.set_ylim([-0.05,0.9])
+    fig.savefig('Floquet.pdf')
 # filename = (datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), f"t53_model5_Campbell.png")
 # scriptDir = os.path.dirname(os.path.abspath(__file__))
 # plt.savefig(os.path.join(scriptDir, f"t53_model5_Campbell_ltest.png"))

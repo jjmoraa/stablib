@@ -177,3 +177,156 @@ def plot_control_panel(time, sandwich, norm_fourier_coeffs, freqs, max_index, ma
         filename = os.path.join(folder_path, f"Mode_{i+1}_with_time_and_freq.png")
         plt.savefig(filename)
         plt.close()
+
+def evaluateStabilityMonodromy(eigenvalues_mon, doPlot=True):
+    """
+    Evaluates Floquet stability from monodromy eigenvalues.
+
+    Parameters
+    ----------
+    eigenvalues_mon : array-like
+        Monodromy matrix eigenvalues
+    doPlot : bool
+        If True, plots eigenvalues on the complex plane with unit circle
+
+    Returns
+    -------
+    stabilityReport : dict
+        Dictionary with:
+            'isStable' : True if all eigenvalues inside unit circle
+            'maxModulus' : maximum |lambda|
+            'unstableEigenvalues' : eigenvalues outside the unit circle
+    """
+    eigenvalues_mon = np.array(eigenvalues_mon)
+    modEigen = np.abs(eigenvalues_mon)
+    maxMod = np.max(modEigen)
+    unstableEigenvalues = eigenvalues_mon[modEigen > 1]
+    isStable = maxMod <= 1
+
+    print(f"Maximum eigenvalue modulus: {maxMod:.4f}")
+    if isStable:
+        print("System is stable: all eigenvalues inside the unit circle.")
+    else:
+        print(f"System is unstable: {len(unstableEigenvalues)} eigenvalue(s) outside the unit circle.")
+        print("Unstable eigenvalues:", unstableEigenvalues)
+
+    if doPlot:
+        theta = np.linspace(0, 2*np.pi, 500)
+        plt.figure()
+        plt.plot(np.cos(theta), np.sin(theta), 'k--', linewidth=1.5)
+        plt.axhline(0, color='gray', linewidth=0.5)
+        plt.axvline(0, color='gray', linewidth=0.5)
+        plt.gca().set_aspect('equal', 'box')
+        plt.grid(True)
+        plt.xlabel('Real')
+        plt.ylabel('Imaginary')
+        plt.title('Floquet Eigenvalues on the Complex Plane')
+
+        stable_idx = modEigen <= 1
+        unstable_idx = ~stable_idx
+
+        plt.plot(eigenvalues_mon[stable_idx].real, eigenvalues_mon[stable_idx].imag, 'go', markersize=8, label='Stable Eigenvalues')
+        plt.plot(eigenvalues_mon[unstable_idx].real, eigenvalues_mon[unstable_idx].imag, 'ro', markersize=8, label='Unstable Eigenvalues')
+        plt.legend()
+        plt.show()
+
+    stabilityReport = {
+        'isStable': isStable,
+        'maxModulus': maxMod,
+        'unstableEigenvalues': unstableEigenvalues
+    }
+
+    return stabilityReport
+
+def plotCampbellDiagram(vf_0, freqs_Hz, save_path='Campbell.pdf'):
+    """
+    Plots a Campbell diagram from Floquet modal frequencies.
+
+    Parameters
+    ----------
+    vf_0 : list of arrays
+        Modal frequencies for each operating point, shape: [n_cases][n_modes]
+    freqs_Hz : array-like
+        Rotor speeds (Hz) corresponding to vf_0
+    f_expected : list or array-like, optional
+        Expected frequencies to overlay as dashed lines
+    save_path : str, optional
+        File path to save the figure
+    """
+    fig, ax = plt.subplots(figsize=(6.4, 4.8))
+    fig.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.11)
+    
+    COLRS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+    n_modes = len(vf_0[0])
+    n_cases = len(vf_0)
+
+    for mode_idx in range(n_modes):
+        mode_freqs = np.array([vf_0[i][mode_idx] for i in range(n_cases)])
+        ax.plot(freqs_Hz, mode_freqs, 'o', c=COLRS[0])
+
+    ax.set_xlabel('Rotor speed [Hz]')
+    ax.set_ylabel('Modal frequency [Hz]')
+    ax.set_title('Campbell Diagram (Floquet)')
+    ax.grid(True)
+
+    ax.set_ylim([-0.05, 0.9])
+    ax.legend(loc='best', fontsize='small')
+
+    fig.savefig(save_path)
+    plt.show()
+    #plt.close(fig)
+
+def plotCampbellDiagramMultipleHarmonics(vf_0, freqs_Hz, var_name='Frequency [Hz]', save_path='Campbell.pdf'):
+    """
+    Plots all harmonic quantities (e.g., frequencies, damping, participation) from Floquet modal analysis.
+
+    Parameters
+    ----------
+    vf_0 : list of 2D arrays
+        Quantity for each operating point, shape: [n_cases][n_harmonics, n_modes]
+    freqs_Hz : array-like
+        Rotor speeds (Hz) corresponding to vf_0
+    var_name : str, optional
+        Label for the plotted variable (used for y-axis label and title)
+    save_path : str, optional
+        File path to save the figure
+    """
+
+    fig, ax = plt.subplots(figsize=(6.4, 4.8))
+    fig.subplots_adjust(left=0.12, right=0.95, top=0.93, bottom=0.11)
+
+    COLRS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    n_cases = len(vf_0)
+    n_harmonics = vf_0[0].shape[0]
+
+    # Plot each harmonic with its own color
+    for h_idx in range(n_harmonics):
+        color = COLRS[h_idx % len(COLRS)]
+        x_points, y_points = [], []
+
+        # Collect data across all operating points
+        for i_case in range(n_cases):
+            freqs_this = np.full(vf_0[i_case][h_idx, :].shape, freqs_Hz[i_case])
+            x_points.append(freqs_this)
+            y_points.append(vf_0[i_case][h_idx, :])
+
+        x_points = np.concatenate(x_points)
+        y_points = np.concatenate(y_points)
+
+        ax.scatter(x_points, y_points, s=20, alpha=0.8, color=color, label=f'Harmonic {h_idx + 1}')
+
+    ax.set_xlabel('Rotor speed [Hz]')
+    ax.set_ylabel(var_name)
+    ax.set_title(f'Campbell Diagram ({var_name})')
+    ax.grid(True, ls='--', alpha=0.5)
+
+    # Autoscale limits
+    ax.set_xlim([0, np.max(freqs_Hz) * 1.05])
+    all_values = np.concatenate([arr.ravel() for arr in vf_0])
+    ax.set_ylim([0, np.max(all_values) * 1.1])
+
+    ax.legend(title='Harmonics', fontsize='small', loc='best')
+    fig.savefig(save_path, bbox_inches='tight')
+    plt.show()
+    # plt.close(fig)
