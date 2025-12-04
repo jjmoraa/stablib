@@ -339,3 +339,118 @@ def check_real(vector, name="vector"):
     if not np.isrealobj(vector):
         raise ValueError(f"{name} contains complex values.")
 
+
+
+def mode_projection_multiple_harmonics_v2(C, Q, V, t, n_harmonics=1, plot=False, sanityChecks=False):
+
+    # Theory dictates last timestep must be removed
+    t = t[:-1]
+    Q = Q[:-1]
+
+    # this is for generating 
+    num_timesteps=len(t)
+    dt = t[1]-t[0]
+    n = V.shape[0]  # Number of modes
+
+    basis = np.zeros((num_timesteps, n, n), dtype=np.complex128)  # Initialize the result matrix (or mode basis)
+
+
+    print('Getting "sandwich :)" (basis of eigenvectors)')
+    basis = time_multiply(Q, V, method="einsum") #get the basis
+
+    if sanityChecks:
+        basis2 = time_multiply(Q, V, method="forloop")
+        if np.allclose(basis, basis2, atol=1e-8):
+           print("[ OK ] Multiplication is good")
+        else: 
+            raise Exception("Multiplication is bad")
+
+    # Fourier coefficients storage
+    freqs = np.fft.fftfreq(len(t), dt)
+    freqs = np.fft.fftshift(freqs) #shift the frequencies
+    ncomp= len(freqs)
+
+    # compute the output specific basis
+    out_spec_basis=C @ basis 
+
+    if sanityChecks:
+        out_spec_basis_sanity=time_multiply(C, basis, method="forloop")
+        if np.allclose(out_spec_basis, out_spec_basis_sanity, atol=1e-8):
+            print("[ OK ] Multiplication is good")
+
+    
+    # --- Riva
+    fourier_coefficients = np.fft.fft(out_spec_basis, axis=0) / out_spec_basis.shape[0]
+    fourier_coefficients = np.fft.fftshift(fourier_coefficients, axes=0)
+    
+    # --- Components by component
+    nt, ny, nx = out_spec_basis.shape
+
+    if sanityChecks:
+        fourier_coefficients_sanity = np.zeros((ncomp, out_spec_basis.shape[1], n), dtype=complex)  # (n, n, t)
+        #each column is a mode, so each column has n elements that change with time (time series)
+        for i in range(out_spec_basis.shape[1]):  # Iterate over rows -state variables
+            for j in range(n):  # Iterate over columns (modes)
+                phij = out_spec_basis[:, i, j]  # Extract time series for each state variable in mode
+                #fft_coeffs = fft(phij) / num_timesteps  # Compute FFT and normalize
+                fft_coeffs = np.fft.fft(phij) / phij.shape[0]
+                fft_coeffs = np.fft.fftshift(fft_coeffs)
+                # fft_coeffs = np.fft.rfft(phij)is it cheating to keep it without the real because im still using max()
+                
+                fourier_coefficients_sanity[:, i, j] = fft_coeffs  # Store Fourier coefficients
+        if np.allclose(fourier_coefficients, fourier_coefficients_sanity, atol=1e-8):
+            print("[ OK ] Fourrier coefficients is good")
+
+    # print(fourier_coefficients[:, i, j])
+
+    '''
+    #after you get the fft of every element, you're supposed to get the norm of each mode.
+    # So according to Peters, that is for each frequency: the norms of the state variables of each mode
+    '''
+
+    total_norms=np.zeros((ncomp)) #this is epsilon according to peters
+    max_vals=np.zeros(ncomp) #one value per frequency
+    max_index=np.zeros(n)
+    max_index_full=np.zeros(ncomp, dtype=int)
+    ifreq0 = np.where(freqs==0)[0][0]
+
+    # Compute norms and participation factor
+    norms = np.linalg.norm(fourier_coefficients, ord=2, axis=1)
+    participation_factor = norms / norms.sum(axis=0)  # shape (ncomp, n_modes)
+
+    if sanityChecks:
+        norms_check = np.zeros((ncomp, n))
+        for freq in range(ncomp):
+            for j in range(n):
+                norms_check[freq, j] = np.linalg.norm(fourier_coefficients[freq, :, j], ord=2)
+        norm_per_mode = np.sum(norms_check, axis=0)
+        participation_factor_check = norms_check / norm_per_mode
+        if np.allclose(participation_factor, participation_factor_check, atol=1e-8):
+            print("[ OK ] Participation factors are good")
+
+    # --- Find top N harmonics per mode
+    max_col_indices = np.zeros((n_harmonics, n), dtype=int)
+    max_values = np.zeros((n_harmonics, n))
+
+    
+    for j in range(n):  # iterate over modes
+        top_idx = np.argsort(participation_factor[:, j])[::-1][:n_harmonics]  # descending order
+        max_col_indices[:, j] = top_idx - ifreq0  # optional: shift by zero-frequency index
+        max_values[:, j] = participation_factor[top_idx, j]
+
+    print('Top harmonic indices per mode:', max_col_indices)
+
+    # pre-allocate array for top participation values
+    max_participation_factor = np.zeros_like(max_col_indices, dtype=float)
+    # n_modes = participation_factor.shape[1]
+
+    # We are going to output them all so then we can select only the unique values outside of this function
+    # for j in range(n_modes):
+    #     max_participation_factor[:, j] = participation_factor[max_col_indices[:, j], j]
+    #     # --- Return results (same as before, max_values and max_indices now 2D)
+    return max_values, max_col_indices, max_participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs
+
+def check_real(vector, name="vector"):
+    if not np.isrealobj(vector):
+        raise ValueError(f"{name} contains complex values.")
+

@@ -238,44 +238,39 @@ def evaluateStabilityMonodromy(eigenvalues_mon, doPlot=True):
 
     return stabilityReport
 
-def plotCampbellDiagram(vf_0, freqs_Hz, save_path='Campbell.pdf'):
-    """
-    Plots a Campbell diagram from Floquet modal frequencies.
+def plotCampbellDiagram(parameter, freqs_Hz, y_label, save_path=None):
 
-    Parameters
-    ----------
-    vf_0 : list of arrays
-        Modal frequencies for each operating point, shape: [n_cases][n_modes]
-    freqs_Hz : array-like
-        Rotor speeds (Hz) corresponding to vf_0
-    f_expected : list or array-like, optional
-        Expected frequencies to overlay as dashed lines
-    save_path : str, optional
-        File path to save the figure
-    """
-    fig, ax = plt.subplots(figsize=(6.4, 4.8))
+    fig, ax = plt.subplots(figsize=(6,4))
     fig.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.11)
-    
+
+    parameter = np.array(parameter)                # Shape = (cases, modes)
+    n_cases, n_modes = parameter.shape
     COLRS = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
-    n_modes = len(vf_0[0])
-    n_cases = len(vf_0)
-
-    for mode_idx in range(n_modes):
-        mode_freqs = np.array([vf_0[i][mode_idx] for i in range(n_cases)])
-        ax.plot(freqs_Hz, mode_freqs, 'o', c=COLRS[0])
+    # ---- plot only ONE branch across cases ---- #
+    for mode in range(n_modes):
+        mode_freqs = parameter[:, mode]
+        ax.plot(freqs_Hz, mode_freqs, '-o',
+                color=COLRS[mode % len(COLRS)],
+                label=f"Mode {mode+1}")
 
     ax.set_xlabel('Rotor speed [Hz]')
-    ax.set_ylabel('Modal frequency [Hz]')
-    ax.set_title('Campbell Diagram (Floquet)')
+    ax.set_ylabel(y_label)
+    ax.set_title(f'Campbell Diagram — {y_label}')
     ax.grid(True)
+    ax.legend(ncol=2, fontsize=8)
 
-    ax.set_ylim([-0.05, 0.9])
-    ax.legend(loc='best', fontsize='small')
+    # --- try to save safely ---
+    if save_path:
+        try:
+            fig.savefig(save_path, dpi=300)
+            print(f"Saved to {save_path}")
+        except Exception as e:
+            print(f"⚠ Could not save figure — {e}")
 
-    fig.savefig(save_path)
     plt.show()
-    #plt.close(fig)
+
+
 
 def plotCampbellDiagramMultipleHarmonics(vf_0, freqs_Hz, var_name='Frequency [Hz]', save_path='Campbell.pdf'):
     """

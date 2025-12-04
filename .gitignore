@@ -1,5 +1,6 @@
 *.csv
 *.jpeg
+*.pdf
 *.png
 __pycache__
 2025*

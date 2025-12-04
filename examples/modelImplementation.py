@@ -101,7 +101,8 @@ for iom, omega in enumerate(omegas): #rads
         
     C = np.zeros((2, At(0).shape[0]))
     C = np.eye(10)
-
+    # C[0, 3] = 1.0
+    # C[1, 4] = 1.0
     # with Timer('mode_proj'):
     #     [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection(C, q_values, eigenvectors_exp, time, plot=plotModeProj, sanityChecks=sanityChecks)
 
@@ -145,20 +146,29 @@ for iom, omega in enumerate(omegas): #rads
 # create an assignment list for modes after sorting them using MAC
 sorted_modes, assignment_list = mac_sort_modes(mode_shapes)
 
-# sort other quantities
-vf_d = reorder_parameters_by_assignment(vf_d, assignment_list)
-vf_0 = reorder_parameters_by_assignment(vf_0, assignment_list)
-zeta_for_range = reorder_parameters_by_assignment(zeta_for_range, assignment_list)
-participation_factor_for_range = reorder_parameters_by_assignment(participation_factor_for_range, assignment_list)
+# make np arrays
+vf_d = np.array(vf_d)
+vf_0 = np.array(vf_0)
+zeta_for_range = np.array(zeta_for_range)
+participation_factor_for_range = np.array(participation_factor_for_range)
 
-# After the loop, you can plot Campbell diagram
-# Convert omegas to Hz for x-axis
-freqs_Hz = omegas / (2 * np.pi)
+for i in range(vf_0.shape[1]):
+    print('Sorting quantities for mode ', i+1)
+    # sort other quantities
+    vf_d_sorted = reorder_parameters_by_assignment(vf_d[:, i, :], assignment_list)
+    vf_0_sorted = reorder_parameters_by_assignment(vf_0[:, i, :], assignment_list)
+    zeta_for_range_sorted = reorder_parameters_by_assignment(zeta_for_range[:, i, :], assignment_list)
+    participation_factor_for_range_sorted = reorder_parameters_by_assignment(participation_factor_for_range[:, i, :], assignment_list)
 
-# plotCampbellDiagram(vf_0_plot_1, freqs_Hz, save_path='Campbell1.pdf')
-# plotCampbellDiagram(vf_0_plot_2, freqs_Hz, save_path='Campbell2.pdf')
-# plotCampbellDiagram(vf_0_plot_3, freqs_Hz, save_path='Campbell3.pdf')
+    # After the loop, you can plot Campbell diagram
+    # Convert omegas to Hz for x-axis
+    freqs_Hz = omegas / (2 * np.pi)
 
-plotCampbellDiagramMultipleHarmonics(vf_0, freqs_Hz, save_path='Campbell1.pdf')
-plotCampbellDiagramMultipleHarmonics(zeta_for_range, freqs_Hz, save_path='Campbell1.pdf')
-plotCampbellDiagramMultipleHarmonics(participation_factor_for_range, freqs_Hz, save_path='Campbell1.pdf')
+    plotCampbellDiagram(vf_0_sorted, freqs_Hz, 'natural frequency [Hz]', save_path=None)
+    # plotCampbellDiagram(vf_0_plot_1, freqs_Hz, save_path='Campbell1.pdf')
+    # plotCampbellDiagram(vf_0_plot_2, freqs_Hz, save_path='Campbell2.pdf')
+    # plotCampbellDiagram(vf_0_plot_3, freqs_Hz, save_path='Campbell3.pdf')
+
+plotCampbellDiagramMultipleHarmonics(vf_d_sorted, freqs_Hz, y_label='Modal frequency [Hz]', save_path='Campbell1.pdf')
+plotCampbellDiagramMultipleHarmonics(zeta_for_range_sorted, freqs_Hz, y_label='Damping ratio [-]', save_path='Campbell1.pdf')
+plotCampbellDiagramMultipleHarmonics(participation_factor_for_range_sorted, freqs_Hz, y_label='Participation factor [-]', save_path='Campbell1.pdf')
