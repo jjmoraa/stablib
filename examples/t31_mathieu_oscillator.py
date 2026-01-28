@@ -112,8 +112,7 @@ else:
 C = mathieu_c
 
 # Perform modal projection on exponent matrix
-
-[max_vals,max_index,participation_factor] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True, sanityChecks=sanityChecks)
+[max_vals,max_index,participation_factor, _, _, _, _, _] = mode_projection(C, q_values, eigenvectors_mon, time, plot=True, sanityChecks=sanityChecks)
 
 if vectors_equal_up_to_sign(max_index, n_principal-[1000,1000]):
     print('[ OK ] strongest harmonic is close')

@@ -35,7 +35,7 @@ from stablib.models.model5DOFs import mass, damping, stiffness
 from stablib.state_space import A_fromMCK, computeDamping, mac_sort_modes, reorder_parameters_by_assignment
 from stablib.floquet import  solve, floquet_eigenanalysis, test_periodic
 from stablib.modeProjection import mode_projection, mode_projection_multiple_harmonics, mode_projection_multiple_harmonics_v2
-from stablib.PostProcessing import plot_freq_heatmap, evaluateStabilityMonodromy, plotCampbellDiagram, plotCampbellDiagramMultipleHarmonics
+from stablib.PostProcessing import plot_freq_heatmap, evaluateStabilityMonodromy, plotCampbellDiagram, plotCampbellDiagramAllModesSingleHarmonic, plotCampbellDiagramMultipleHarmonics
 # Define the mass, damping and stiffness matrices
 
 # --- Script parameters
@@ -123,7 +123,7 @@ for iom, omega in enumerate(omegas): #rads
         
     n_harmonics=3
     with Timer('mode_proj'):
-        [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs] = mode_projection_multiple_harmonics_v2(C, q_values, eigenvectors_exp, time, n_harmonics, plot=False, sanityChecks=False)
+        [max_vals, max_index, participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs, ifreq0] = mode_projection_multiple_harmonics_v2(C, q_values, eigenvectors_exp, time, n_harmonics, plot=False, sanityChecks=False)
     # correct index with strongest frequency
     eigenvalues_exp_corrected = eigenvalues_exp + 1j*(max_index)*(omega)
     eigenvalues_exp_corrected_for_range.append(eigenvalues_exp_corrected)
@@ -161,9 +161,9 @@ for iom, omega in enumerate(omegas): #rads
     #eigenvalues_unique = eigenvalues_exp_corrected_for_range[0]+1j*(unique_by_mode)*omega
     for iind in range(len(unique_indices)):
         eigenvalues_unique [iom, iind, :] = eigenvalues_exp_corrected_for_range[iom, 0, :] + 1j * np.tile(unique_indices[None, :] * omega, (10, 1))[:,iind]
-        pf_index_unique[iom, iind, :] = max_index_for_range[iom,0,:] + unique_indices[iind]
-#    f_d[iom], f_0[iom], zeta[iom] = computeDamping(eigenvalues_unique[iom,:,:])
-f_d2, f_02, zeta2 =  computeDamping(eigenvalues_unique)
+        pf_index_unique[iom, iind, :] = max_index_for_range[iom,0,:] + unique_indices[iind]+ifreq0
+    f_d[iom], f_0[iom], zeta[iom] = computeDamping(eigenvalues_unique[iom,:,:])
+#f_d2, f_02, zeta2 =  computeDamping(eigenvalues_unique)
 
 n_omega, n_harmonics, n_modes = participation_factor_for_range.shape
 
@@ -174,7 +174,7 @@ pf_of_interest = participation_factor_for_range[
     np.arange(n_modes)[None, None, :]        # modes axis
 ]
 # np.ix_
-pf_of_interest2 = participation_factor_for_range[np.ix(np.arange(n_omega) ,  pf_index_unique.astype(int),  np.arange(n_modes) ) ]
+# pf_of_interest2 = participation_factor_for_range[np.ix(np.arange(n_omega) ,  pf_index_unique.astype(int),  np.arange(n_modes) ) ]
 
 # pf_of_interest = participation_factor_for_range[:,np.int32(pf_index_unique[:,:])]
 # select just first harmonic
@@ -245,9 +245,13 @@ The indexing convention is:
 
 '''
 
+
+'''original plots
 plotCampbellDiagram(vf_0_sorted[:,0,:], freqs_Hz, 'natural frequency [Hz]', save_path=None)
 plotCampbellDiagram(vf_d_sorted[:,0,:], freqs_Hz, 'natural frequency [Hz]', save_path=None)
 plotCampbellDiagram(zeta_for_range_sorted[:,0,:], freqs_Hz, 'natural frequency [Hz]', save_path=None)
+
+'''
 
 '''
 # Select the mode you want, e.g., mode index 1
@@ -259,3 +263,43 @@ pf_mode_norm = pf_mode / np.max(pf_mode, axis=1, keepdims=True)
 # Now you can plot
 plotCampbellDiagram(pf_mode_norm, freqs_Hz, 'natural frequency [Hz]', save_path=None)
 '''
+
+
+'''
+YAAAY IT WORKED
+
+'''
+
+relevant_modes = int(len(mode_shapes)/2)
+
+# All modes, principal harmonic (0)
+plotCampbellDiagramAllModesSingleHarmonic(vf_0_sorted[:,:,0:(relevant_modes)],freqs_Hz,0,var_name='Frequency [Hz]',save_path=None)
+plotCampbellDiagramAllModesSingleHarmonic(zeta_for_range_sorted[:,:,0:(relevant_modes)],freqs_Hz,0,var_name='Frequency [Hz]',save_path=None)
+
+# All modes, 1st harmonic (1)
+plotCampbellDiagramAllModesSingleHarmonic(vf_0_sorted[:,:,0:(relevant_modes)],freqs_Hz,1,var_name='Damping',save_path=None)
+plotCampbellDiagramAllModesSingleHarmonic(zeta_for_range_sorted[:,:,0:(relevant_modes)],freqs_Hz,1,var_name='Damping',save_path=None)
+
+#Fan of modes
+mod_indices = [0, 1, 3]
+for i in mod_indices:
+    # --- Natural frequency Campbell plot ---
+    plotCampbellDiagram(
+        vf_0_sorted[:, :, i],
+        freqs_Hz,
+        f'natural frequency [Hz] Mode {i+1}',
+        save_path=None
+    )
+
+    # --- Participation factor Campbell plot ---
+    pf_mode = participation_factor_for_range_sorted[:, :, i]
+    pf_mode_norm = pf_mode / np.sum(pf_mode, axis=1, keepdims=True)
+
+    plotCampbellDiagram(
+        pf_mode_norm,
+        freqs_Hz,
+        f'participation factor (normalized) Mode {i+1}',
+        save_path=None
+    )
+
+print('Analysis done')

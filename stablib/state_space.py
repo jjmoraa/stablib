@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.linalg import expm
 from scipy.integrate import solve_ivp
+from scipy.interpolate import interp1d
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -267,3 +268,70 @@ def calculate_macx_matrix(mode_prev, mode_next):
             MACX[i, j] = MAC[i, j] / (1 + cross_prev + cross_next)
 
     return MACX
+
+import openfast_toolbox
+import os
+from openfast_toolbox.io.fast_linearization_file import FASTLinearizationFile
+
+def readLinFiles(filename, print = False):
+    # --- Open and convert files to DataFrames
+    lin = FASTLinearizationFile(filename)
+
+    if print:
+        print(lin)
+        print(lin['A'])
+        print(lin['A'].shape)
+        print('Using to dataframe:')
+
+    dfs = lin.toDataFrame()
+
+    if print:
+        print(dfs.keys())
+        print('A:')
+        print(dfs['A'])
+
+    return dfs
+
+from scipy.interpolate import interp1d
+import numpy as np
+
+def make_matrix_interpolator(matrices, period=None, positions=None, kind='cubic'):
+    """
+    Create a lambda function to interpolate between a series of matrices.
+    
+    If only one matrix is given, returns a constant function.
+
+    Parameters
+    ----------
+    matrices : np.ndarray
+        Array of shape (nMatrices, nStates, nStates) containing the matrices to interpolate.
+    positions : np.ndarray, optional
+        Positions corresponding to each matrix. If None, uses np.linspace(0, 1, nMatrices).
+    kind : str
+        Type of interpolation ('linear', 'cubic', etc.)
+    period : float, optional
+        Period in seconds. If given, the returned lambda accepts time in seconds.
+
+    Returns
+    -------
+    interp_lambda : function
+        Lambda function interp_lambda(pos_or_time) that returns an interpolated matrix.
+        If period is given, input is in seconds; otherwise input is normalized [0,1].
+    """
+    nMatrices, nStates, _ = matrices.shape
+
+    if nMatrices == 1:
+        return lambda pos: matrices[0]
+
+    if positions is None:
+        positions = np.linspace(0, 1, nMatrices)
+    
+    matrices_flat = matrices.reshape(nMatrices, -1)
+    interp_func = interp1d(positions, matrices_flat, axis=0, kind=kind, fill_value="extrapolate")
+    
+    if period is None:
+        # Input is normalized position
+        return lambda pos: interp_func(pos).reshape(nStates, nStates)
+    else:
+        # Input is physical time; scale and wrap
+        return lambda t: interp_func((t / period) % 1.0).reshape(nStates, nStates)

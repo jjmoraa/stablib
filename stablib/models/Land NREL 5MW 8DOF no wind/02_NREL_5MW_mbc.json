@@ -1,0 +1,259 @@
+{
+	"RotSpeed": 14.000223724021664,
+	"WindSpeed": 0,
+	"DescStates": [
+		"ED 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m",
+		"ED 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m",
+		"ED 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m",
+		"ED First time derivative of 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m/s",
+		"ED First time derivative of 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m/s"
+	],
+	"Azimuths": [
+		0.0039,
+		0.178,
+		0.3521,
+		0.5262,
+		0.7003,
+		0.8744,
+		1.0485,
+		1.2226,
+		1.3967,
+		1.5708,
+		1.7541,
+		1.9282,
+		2.1023,
+		2.2764,
+		2.4504,
+		2.6245,
+		2.7986,
+		2.9727,
+		3.1468,
+		3.3209,
+		3.495,
+		3.6691,
+		3.8432,
+		4.0173,
+		4.1914,
+		4.3655,
+		4.5396,
+		4.7137,
+		4.8878,
+		5.0619,
+		5.236,
+		5.4193,
+		5.5933,
+		5.7674,
+		5.9415,
+		6.1156
+	],
+	"OrderX": {
+		"Num": 16,
+		"NumFixed": 4,
+		"NumRotating": 12,
+		"NumTriplets": 4,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10,
+			11,
+			12,
+			13,
+			14,
+			15
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			],
+			[
+				10,
+				11,
+				12
+			],
+			[
+				13,
+				14,
+				15
+			]
+		]
+	},
+	"OrderX2": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			]
+		]
+	},
+	"OrderX2dot": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			8,
+			9,
+			10,
+			11,
+			12,
+			13,
+			14,
+			15
+		],
+		"Triplets": [
+			[
+				10,
+				11,
+				12
+			],
+			[
+				13,
+				14,
+				15
+			]
+		]
+	},
+	"OrderX1": {
+		"Num": 0,
+		"NumFixed": 0,
+		"NumRotating": 0,
+		"NumTriplets": 0,
+		"Indices": [],
+		"Triplets": []
+	},
+	"OrderU": {
+		"Num": 6,
+		"NumFixed": 3,
+		"NumRotating": 3,
+		"NumTriplets": 1,
+		"Indices": [
+			3,
+			4,
+			5,
+			0,
+			1,
+			2
+		],
+		"Triplets": [
+			[
+				0,
+				1,
+				2
+			]
+		]
+	},
+	"OrderY": {
+		"Num": 33,
+		"NumFixed": 21,
+		"NumRotating": 0,
+		"NumTriplets": 0,
+		"Indices": [
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			18,
+			19,
+			20,
+			21,
+			22,
+			23,
+			24,
+			25,
+			26,
+			27,
+			28,
+			29,
+			30,
+			31,
+			32
+		],
+		"Triplets": []
+	},
+	"OrderEigen": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			]
+		]
+	},
+	"DOFsEigen": [
+		"ED 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m",
+		"ED 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m",
+		"ED 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m"
+	]
+}

@@ -1,0 +1,268 @@
+
+
+**************************************************************************************************
+OpenFAST
+
+Copyright (C) 2023 National Renewable Energy Laboratory
+Copyright (C) 2023 Envision Energy USA LTD
+
+This program is licensed under Apache License Version 2.0 and comes with ABSOLUTELY NO WARRANTY.
+See the "LICENSE" file distributed with this software for details.
+**************************************************************************************************
+
+OpenFAST-v3.5.1
+Compile Info:
+- Compiler: Intel(R) Fortran Compiler 2021
+- Architecture: 64 bit
+- Precision: single
+- OpenMP: No
+- Date: Oct 20 2023
+- Time: 13:40:29
+Execution Info:
+- Date: 01/17/2026
+- Time: 06:32:31-0500
+
+
+OpenFAST input file heading:
+
+FAST Certification Test #18: NREL 5.0 MW Baseline Wind Turbine (Onshore)
+
+
+Running ElastoDyn.
+
+Nodal outputs section of ElastoDyn input file not found or improperly formatted.
+
+Time: 0 of 300 seconds.
+
+Time: 3 of 300 seconds.  Estimated final completion at 06:32:53.
+
+Time: 6 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 9 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 12 of 300 seconds.  Estimated final completion at 06:32:54.
+
+Time: 15 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 18 of 300 seconds.  Estimated final completion at 06:32:57.
+
+Time: 21 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 24 of 300 seconds.  Estimated final completion at 06:32:54.
+
+Time: 27 of 300 seconds.  Estimated final completion at 06:32:54.
+
+Time: 30 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 33 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 36 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 39 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 42 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 45 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 48 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 51 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 54 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 57 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 60 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 63 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 66 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 69 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 72 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 75 of 300 seconds.  Estimated final completion at 06:32:57.
+
+Time: 78 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 81 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 84 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 87 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 90 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 93 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 96 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 99 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 102 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 105 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 108 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 111 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 114 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 117 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 120 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 123 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 126 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 129 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 132 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 135 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 138 of 300 seconds.  Estimated final completion at 06:32:54.
+
+Time: 141 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 144 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 147 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 150 of 300 seconds.  Estimated final completion at 06:32:56.
+
+Time: 153 of 300 seconds.  Estimated final completion at 06:32:54.
+
+Time: 156 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 159 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 162 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 165 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 168 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Time: 171 of 300 seconds.  Estimated final completion at 06:32:55.
+
+Performing linearization 1 at simulation time 170.41 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 2 at simulation time 170.47 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 3 at simulation time 170.54 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 4 at simulation time 170.61 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 5 at simulation time 170.67 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 6 at simulation time 170.74 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 7 at simulation time 170.81 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 8 at simulation time 170.87 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 9 at simulation time 170.94 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 10 at simulation time 171.01 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 11 at simulation time 171.07 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 12 at simulation time 171.14 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 13 at simulation time 171.21 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 14 at simulation time 171.27 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 15 at simulation time 171.34 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 16 at simulation time 171.41 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 17 at simulation time 171.47 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 18 at simulation time 171.54 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 19 at simulation time 171.61 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 20 at simulation time 171.67 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 21 at simulation time 171.74 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 22 at simulation time 171.81 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 23 at simulation time 171.87 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 24 at simulation time 171.94 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 25 at simulation time 172.01 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 26 at simulation time 172.07 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 27 at simulation time 172.14 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 28 at simulation time 172.21 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 29 at simulation time 172.27 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 30 at simulation time 172.34 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 31 at simulation time 172.41 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 32 at simulation time 172.47 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 33 at simulation time 172.54 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 34 at simulation time 172.61 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 35 at simulation time 172.67 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+Performing linearization 36 at simulation time 172.74 s. (RotSpeed=25 rpm, BldPitch1=0 deg)
+
+
+
+
+Total Real Time:       23.74 seconds
+Total CPU Time:        23.516 seconds
+Simulation CPU Time:   23.516 seconds
+Simulated Time:        172.74 seconds
+Time Ratio (Sim/CPU):  7.3456
+
+OpenFAST terminated normally.
+

@@ -309,7 +309,17 @@ def plotCampbellDiagramMultipleHarmonics(vf_0, freqs_Hz, var_name='Frequency [Hz
         x_points = np.concatenate(x_points)
         y_points = np.concatenate(y_points)
 
-        ax.scatter(x_points, y_points, s=20, alpha=0.8, color=color, label=f'Harmonic {h_idx + 1}')
+        ax.plot(
+            x_points,
+            y_points,
+            marker='o',       # dots at each point
+            linestyle='-',    # connect dots with lines
+            markersize=5,     # size of the dots
+            alpha=0.8,
+            color=color,
+            label=f'Harmonic {h_idx + 1}'
+        )
+
 
     ax.set_xlabel('Rotor speed [Hz]')
     ax.set_ylabel(var_name)
@@ -325,3 +335,68 @@ def plotCampbellDiagramMultipleHarmonics(vf_0, freqs_Hz, var_name='Frequency [Hz
     fig.savefig(save_path, bbox_inches='tight')
     plt.show()
     # plt.close(fig)
+
+def plotCampbellDiagramAllModesSingleHarmonic(
+    vf_0,
+    freqs_Hz,
+    harmonic_idx,
+    var_name='Frequency [Hz]',
+    save_path=None
+):
+    """
+    Plots all modes for a single harmonic across operating points as dots connected by lines.
+
+    Parameters
+    ----------
+    vf_0 : list of 2D arrays
+        Shape: [n_cases][n_harmonics, n_modes]
+    freqs_Hz : array-like
+        Rotor speeds (Hz)
+    harmonic_idx : int
+        Harmonic index to plot (0-based)
+    var_name : str
+        Y-axis label
+    save_path : str or None, optional
+        If provided, save figure to this path. If None, figure is not saved.
+    """
+
+    fig, ax = plt.subplots(figsize=(6.4, 4.8))
+    fig.subplots_adjust(left=0.12, right=0.95, top=0.93, bottom=0.11)
+
+    n_cases = len(vf_0)
+    n_modes = vf_0[0].shape[1]
+
+    COLRS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+    for mode_idx in range(n_modes):
+        x_points = [freqs_Hz[i_case] for i_case in range(n_cases)]
+        y_points = [vf_0[i_case][harmonic_idx, mode_idx] for i_case in range(n_cases)]
+
+        # Plot line with dots
+        ax.plot(
+            x_points,
+            y_points,
+            marker='o',       # show dots
+            linestyle='-',    # connect with lines
+            markersize=5,
+            alpha=0.8,
+            color=COLRS[mode_idx % len(COLRS)],
+            label=f'Mode {mode_idx + 1}'
+        )
+
+    ax.set_xlabel('Rotor speed [Hz]')
+    ax.set_ylabel(var_name)
+    ax.set_title(f'Campbell Diagram – Harmonic {harmonic_idx}')
+    ax.grid(True, ls='--', alpha=0.5)
+
+    ax.set_xlim([0, max(freqs_Hz) * 1.05])
+
+    all_vals = np.concatenate([arr[harmonic_idx, :] for arr in vf_0])
+    ax.set_ylim([0, 1.1 * np.max(all_vals)])
+
+    ax.legend(title='Modes', fontsize='small', loc='best')
+
+    if save_path is not None:
+        fig.savefig(save_path, bbox_inches='tight')
+
+    plt.show()

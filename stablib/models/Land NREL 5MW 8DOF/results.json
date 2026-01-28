@@ -1,0 +1,653 @@
+{
+	"LinDir": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02",
+	"HasWind": true,
+	"OPs": [
+		{
+			"ID": 0,
+			"Files": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\00_NREL_5MW.1.lin"
+			],
+			"RotSpeed": 6.9719415,
+			"WindSpeed": 1,
+			"Modes": [
+				{
+					"ID": 0,
+					"OP": 0,
+					"NaturalFreqHz": 0.33661607,
+					"DampedFreqHz": 0.3360389,
+					"DampingRatio": 0.058535144
+				},
+				{
+					"ID": 1,
+					"OP": 0,
+					"NaturalFreqHz": 0.58806664,
+					"DampedFreqHz": 0.51196975,
+					"DampingRatio": 0.49199474
+				},
+				{
+					"ID": 2,
+					"OP": 0,
+					"NaturalFreqHz": 0.70122415,
+					"DampedFreqHz": 0.64075506,
+					"DampingRatio": 0.40624014
+				},
+				{
+					"ID": 3,
+					"OP": 0,
+					"NaturalFreqHz": 0.79835695,
+					"DampedFreqHz": 0.74343246,
+					"DampingRatio": 0.36450088
+				},
+				{
+					"ID": 4,
+					"OP": 0,
+					"NaturalFreqHz": 1.8127179,
+					"DampedFreqHz": 1.7986403,
+					"DampingRatio": 0.124385625
+				},
+				{
+					"ID": 5,
+					"OP": 0,
+					"NaturalFreqHz": 1.9773424,
+					"DampedFreqHz": 1.9643193,
+					"DampingRatio": 0.11458164
+				},
+				{
+					"ID": 6,
+					"OP": 0,
+					"NaturalFreqHz": 2.0440495,
+					"DampedFreqHz": 2.0315464,
+					"DampingRatio": 0.110437594
+				},
+				{
+					"ID": 7,
+					"OP": 0,
+					"NaturalFreqHz": 2.8588355,
+					"DampedFreqHz": 2.8585372,
+					"DampingRatio": 0.014444157
+				}
+			]
+		},
+		{
+			"ID": 1,
+			"Files": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.9.lin"
+			],
+			"RotSpeed": 7.8237386,
+			"WindSpeed": 5.75,
+			"Modes": [
+				{
+					"ID": 0,
+					"OP": 1,
+					"NaturalFreqHz": 0.33797303,
+					"DampedFreqHz": 0.33729336,
+					"DampingRatio": 0.06338653
+				},
+				{
+					"ID": 1,
+					"OP": 1,
+					"NaturalFreqHz": 0.58684283,
+					"DampedFreqHz": 0.48741788,
+					"DampingRatio": 0.5569045
+				},
+				{
+					"ID": 2,
+					"OP": 1,
+					"NaturalFreqHz": 0.70720106,
+					"DampedFreqHz": 0.62962884,
+					"DampingRatio": 0.4553531
+				},
+				{
+					"ID": 3,
+					"OP": 1,
+					"NaturalFreqHz": 0.8163644,
+					"DampedFreqHz": 0.74732655,
+					"DampingRatio": 0.40247142
+				},
+				{
+					"ID": 4,
+					"OP": 1,
+					"NaturalFreqHz": 1.7989932,
+					"DampedFreqHz": 1.7811142,
+					"DampingRatio": 0.14063391
+				},
+				{
+					"ID": 5,
+					"OP": 1,
+					"NaturalFreqHz": 1.9765112,
+					"DampedFreqHz": 1.9601191,
+					"DampingRatio": 0.12852293
+				},
+				{
+					"ID": 6,
+					"OP": 1,
+					"NaturalFreqHz": 2.0562732,
+					"DampedFreqHz": 2.0406902,
+					"DampingRatio": 0.12287844
+				},
+				{
+					"ID": 7,
+					"OP": 1,
+					"NaturalFreqHz": 2.8605132,
+					"DampedFreqHz": 2.8601744,
+					"DampingRatio": 0.015391418
+				}
+			]
+		},
+		{
+			"ID": 2,
+			"Files": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.9.lin"
+			],
+			"RotSpeed": 11.726536,
+			"WindSpeed": 10.5,
+			"Modes": [
+				{
+					"ID": 0,
+					"OP": 2,
+					"NaturalFreqHz": 0.34205163,
+					"DampedFreqHz": 0.3411582,
+					"DampingRatio": 0.07222845
+				},
+				{
+					"ID": 1,
+					"OP": 2,
+					"NaturalFreqHz": 0.6104655,
+					"DampedFreqHz": 0.36552453,
+					"DampingRatio": 0.8009258
+				},
+				{
+					"ID": 2,
+					"OP": 2,
+					"NaturalFreqHz": 0.74774104,
+					"DampedFreqHz": 0.5693868,
+					"DampingRatio": 0.64819324
+				},
+				{
+					"ID": 3,
+					"OP": 2,
+					"NaturalFreqHz": 0.9012614,
+					"DampedFreqHz": 0.75548005,
+					"DampingRatio": 0.54529005
+				},
+				{
+					"ID": 4,
+					"OP": 2,
+					"NaturalFreqHz": 1.7289902,
+					"DampedFreqHz": 1.6930475,
+					"DampingRatio": 0.2028406
+				},
+				{
+					"ID": 5,
+					"OP": 2,
+					"NaturalFreqHz": 1.9666655,
+					"DampedFreqHz": 1.9351658,
+					"DampingRatio": 0.17826146
+				},
+				{
+					"ID": 6,
+					"OP": 2,
+					"NaturalFreqHz": 2.1077209,
+					"DampedFreqHz": 2.0788844,
+					"DampingRatio": 0.16485018
+				},
+				{
+					"ID": 7,
+					"OP": 2,
+					"NaturalFreqHz": 2.8626287,
+					"DampedFreqHz": 2.862167,
+					"DampingRatio": 0.01795935
+				}
+			]
+		},
+		{
+			"ID": 3,
+			"Files": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.9.lin"
+			],
+			"RotSpeed": 12.099914,
+			"WindSpeed": 15.25,
+			"Modes": [
+				{
+					"ID": 0,
+					"OP": 3,
+					"NaturalFreqHz": 0.34336945,
+					"DampedFreqHz": 0.34236044,
+					"DampingRatio": 0.07660614
+				},
+				{
+					"ID": 1,
+					"OP": 3,
+					"NaturalFreqHz": 0.6125203,
+					"DampedFreqHz": 0.34214115,
+					"DampingRatio": 0.82945114
+				},
+				{
+					"ID": 2,
+					"OP": 3,
+					"NaturalFreqHz": 0.74561816,
+					"DampedFreqHz": 0.5508345,
+					"DampingRatio": 0.67396617
+				},
+				{
+					"ID": 3,
+					"OP": 3,
+					"NaturalFreqHz": 0.90327454,
+					"DampedFreqHz": 0.7446897,
+					"DampingRatio": 0.565959
+				},
+				{
+					"ID": 4,
+					"OP": 3,
+					"NaturalFreqHz": 1.7595476,
+					"DampedFreqHz": 1.7161288,
+					"DampingRatio": 0.22077863
+				},
+				{
+					"ID": 5,
+					"OP": 3,
+					"NaturalFreqHz": 1.9926065,
+					"DampedFreqHz": 1.9546149,
+					"DampingRatio": 0.19434287
+				},
+				{
+					"ID": 6,
+					"OP": 3,
+					"NaturalFreqHz": 2.1490366,
+					"DampedFreqHz": 2.114469,
+					"DampingRatio": 0.17863826
+				},
+				{
+					"ID": 7,
+					"OP": 3,
+					"NaturalFreqHz": 2.782886,
+					"DampedFreqHz": 2.7824717,
+					"DampingRatio": 0.017259073
+				}
+			]
+		},
+		{
+			"ID": 4,
+			"Files": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.9.lin"
+			],
+			"RotSpeed": 12.099914,
+			"WindSpeed": 20,
+			"Modes": [
+				{
+					"ID": 0,
+					"OP": 4,
+					"NaturalFreqHz": 0.3437918,
+					"DampedFreqHz": 0.34281942,
+					"DampingRatio": 0.07515909
+				},
+				{
+					"ID": 1,
+					"OP": 4,
+					"NaturalFreqHz": 0.593222,
+					"DampedFreqHz": 0.33230805,
+					"DampingRatio": 0.8283744
+				},
+				{
+					"ID": 2,
+					"OP": 4,
+					"NaturalFreqHz": 0.7255199,
+					"DampedFreqHz": 0.53977257,
+					"DampingRatio": 0.66820145
+				},
+				{
+					"ID": 3,
+					"OP": 4,
+					"NaturalFreqHz": 0.88613313,
+					"DampedFreqHz": 0.73521954,
+					"DampingRatio": 0.5582181
+				},
+				{
+					"ID": 4,
+					"OP": 4,
+					"NaturalFreqHz": 1.7745916,
+					"DampedFreqHz": 1.7402623,
+					"DampingRatio": 0.19574378
+				},
+				{
+					"ID": 5,
+					"OP": 4,
+					"NaturalFreqHz": 2.0030823,
+					"DampedFreqHz": 1.9731344,
+					"DampingRatio": 0.1722737
+				},
+				{
+					"ID": 6,
+					"OP": 4,
+					"NaturalFreqHz": 2.1647637,
+					"DampedFreqHz": 2.1375065,
+					"DampingRatio": 0.15819009
+				},
+				{
+					"ID": 7,
+					"OP": 4,
+					"NaturalFreqHz": 2.726884,
+					"DampedFreqHz": 2.7265558,
+					"DampingRatio": 0.015509466
+				}
+			]
+		}
+	],
+	"LinOPs": [
+		{
+			"Name": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\00_NREL_5MW",
+			"FilePaths": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\00_NREL_5MW.1.lin"
+			],
+			"HasAeroStates": false
+		},
+		{
+			"Name": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW",
+			"FilePaths": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\01_NREL_5MW.9.lin"
+			],
+			"HasAeroStates": false
+		},
+		{
+			"Name": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW",
+			"FilePaths": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\02_NREL_5MW.9.lin"
+			],
+			"HasAeroStates": false
+		},
+		{
+			"Name": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW",
+			"FilePaths": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\03_NREL_5MW.9.lin"
+			],
+			"HasAeroStates": false
+		},
+		{
+			"Name": "C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW",
+			"FilePaths": [
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.1.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.10.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.11.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.12.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.13.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.14.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.15.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.16.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.17.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.18.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.19.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.2.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.20.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.21.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.22.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.23.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.24.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.25.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.26.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.27.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.28.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.29.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.3.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.30.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.31.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.32.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.33.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.34.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.35.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.36.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.4.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.5.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.6.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.7.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.8.lin",
+				"C:\\Users\\josej\\Documents\\ACDC\\OpenFAST acdc main examples\\NREL_5MW_Land\\NREL_5MW\\Case02\\04_NREL_5MW.9.lin"
+			],
+			"HasAeroStates": false
+		}
+	]
+}

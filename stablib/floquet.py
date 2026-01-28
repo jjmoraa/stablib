@@ -117,12 +117,17 @@ def solve(At,time,plot=True,folder_name=None, rtol=1e-6):
         plot_matrix(y_vals, time, folder_name=None)
     return sol
 
-def floquet_eigenanalysis(sol,time,omega,plot=False, sanityChecks=False, verbose=True):
+def floquet_eigenanalysis(sol,time,omega,plot=False, sanityChecks=False, verbose=True, period=None):
     if verbose:
         print('Computing eigenvalues for solution using floquet analysis...')
 
     # Compute the required transformations
-    period=2*np.pi/omega
+     # Determine period
+    if period is None:
+        period = 2*np.pi / omega  # default behavior
+    else:
+        period = period  # use user-provided period
+        
     nStates = int(np.sqrt(sol.y.shape[0]))
     x0 = np.eye(nStates)
     # Solve the system numerically over one period [0, 2*pi]

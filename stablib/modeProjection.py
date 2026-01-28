@@ -448,7 +448,7 @@ def mode_projection_multiple_harmonics_v2(C, Q, V, t, n_harmonics=1, plot=False,
     # for j in range(n_modes):
     #     max_participation_factor[:, j] = participation_factor[max_col_indices[:, j], j]
     #     # --- Return results (same as before, max_values and max_indices now 2D)
-    return max_values, max_col_indices, max_participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs
+    return max_values, max_col_indices, max_participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs, ifreq0
 
 def check_real(vector, name="vector"):
     if not np.isrealobj(vector):
