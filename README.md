@@ -3,7 +3,7 @@
 
 # **stablib**
 
-*A lightweight library for Floquet-based stability analysis of periodic dynamical systems.*
+*A library for Floquet-based stability analysis of periodic dynamical systems.*
 
 ---
 
@@ -88,7 +88,7 @@ If you use **stablib** in academic work, please cite:
   title  = {stablib: A Floquet Stability Analysis Library},
   author = {Mora Amaro, J.; Branlard, E.; Riva, R.},
   year   = {2026},
-  url    = {https://github.com/jjmoraa/Floquet}
+  url    = {https://github.com/jjmoraa/stablib}
 }
 ```
 
