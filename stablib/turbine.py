@@ -27,6 +27,8 @@ class Turbine:
             self.u_vel,
             self.omegas,
             self.T_rotor,
+            self.q_of_interest,
+            self.results
         ) = openfast.openFAST_A_interpreter(self.model_folder)
 
         # Storage results later
@@ -157,10 +159,10 @@ class Turbine:
             zeta_for_range_sorted[:, iind, :] = reorder_parameters_by_assignment(zeta[:,iind,:], assignment_array)
             participation_factor_for_range_sorted[:, iind, :] = reorder_parameters_by_assignment(pf_of_interest[:,iind,:], assignment_array)
 
-        self.results["vf_0_sorted"] = vf_0_sorted
-        self.results["vf_d_sorted"] = vf_d_sorted
-        self.results["zeta_for_range_sorted"] = zeta_for_range_sorted
-        self.results["participation_factor_for_range_sorted"] = participation_factor_for_range_sorted
+        self.q_of_interest["vf_0_sorted"] = vf_0_sorted
+        self.q_of_interest["vf_d_sorted"] = vf_d_sorted
+        self.q_of_interest["zeta_for_range_sorted"] = zeta_for_range_sorted
+        self.q_of_interest["participation_factor_for_range_sorted"] = participation_factor_for_range_sorted
 
     def plot_campbell(self):
         """
@@ -168,5 +170,5 @@ class Turbine:
         """
         vf_0_sorted = self.results["vf_0_sorted"]
         omegas = self.omegas
-        
+
         ...
