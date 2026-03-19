@@ -34,7 +34,7 @@ class floquetParametric:
                     x = self.omega
                     label = 'Angular speed'
 
-    def run_floquet_analysis(self, plotIVP, out_spec_matrix = [], n_harmonics=3, rtol=1e-4):
+    def run_floquet_analysis(self, plotIVP, rtol=1e-4):
         """
         Run full Campbell / Floquet analysis over all operating points.
         """
@@ -54,7 +54,7 @@ class floquetParametric:
 
         with Timer('floquet_eig'):
             [monodromy, exponent_matrix, eigenvalues_mon, eigenvectors_mon, eigenvalues_exp, eigenvectors_exp, q_values] \
-            = floquet_eigenanalysis(sol,time,omega, plot=False, sanityChecks=False, period = period)
+            = floquet_eigenanalysis(sol,time, omega, plot=False, sanityChecks=False, period = period)
         print('Floquet eigenanalysis is finished')
 
         stabilityMon = evaluateStabilityMonodromy(eigenvalues_mon, doPlot=False)
@@ -66,7 +66,7 @@ class floquetParametric:
         self.results["eigenvectors_exp"] = eigenvectors_exp
         self.results["q_values"] = q_values
 
-    def run_modal_projection(self, out_spec_matrix = [], n_harmonics = 3):
+    def run_modal_projection(self, out_spec_matrix = None, n_harmonics = 3):
         omega = self.omega
         period = 2*np.pi / omega
         num_points=10001 #give odd number to get even number in fft (very important)
@@ -76,8 +76,8 @@ class floquetParametric:
         eigenvectors_exp = self.results["eigenvectors_exp"]
         eigenvalues_exp = self.results["eigenvalues_exp"]
 
-        if out_spec_matrix == []:
-            out_spec_basis = np.eye(self.dofs)
+        if out_spec_matrix is None:
+            out_spec_matrix = np.eye(self.dofs)
         
         with Timer('mode_proj'):
             [max_vals, max_index, participation_factor, basis, out_spec_basis, \
@@ -100,14 +100,14 @@ class floquetParametricRange:
         self.A_vector = A_vector
         self.param = param
         self.label = param_label
-        self.operating_points = np.empty_like(omegas)
-        self.eigenvalues_exp_corrected_for_range = np.empty_like(omegas)
-        self.participation_factor_for_range = np.empty_like(omegas)
-        self.max_index_for_range = np.empty_like(omegas)
-        self.off_indices = np.empty_like(omegas)
-        self.unique_indices = np.empty_like(omegas)
-        self.ifreq0 = np.empty_like(omegas)
-        self.results = []
+        self.operating_points = np.empty(len(omegas), dtype=object)
+        self.eigenvalues_exp_corrected_for_range = np.empty(len(omegas), dtype=object)
+        self.participation_factor_for_range = np.empty(len(omegas), dtype=object)
+        self.max_index_for_range = np.empty(len(omegas), dtype=object)
+        self.off_indices = np.empty(len(omegas), dtype=object)
+        self.unique_indices = np.empty(len(omegas), dtype=object)
+        self.ifreq0 = np.empty(len(omegas), dtype=object)
+        self.results = {}
 
         self.__createOPobjects()
 
@@ -116,18 +116,22 @@ class floquetParametricRange:
         omegas = self.omegas
         A_vector = self.A_vector
         param = self.param
-        param_label = self.param_label
+        param_label = self.label
+        print(f'------------------ creating floquet objects ------------------------')
         for iom, omega in enumerate(omegas): #rads
-            print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ------------------------')
-            floquet_obj = floquetParametric(self, omega, A_vector[iom], param, param_label)
+            floquet_obj = floquetParametric(omega, A_vector[iom], param, param_label)
             self.operating_points[iom] = floquet_obj
+        print(f'done')
     
     def runAnalyses(self, out_spec_matrix = None, harmonics=3, rtol=1e-4):
-         
-        for iom, omega in enumerate(self.omegas): #rads
+        
+        omegas = self.omegas
+        for iom, omega in enumerate(omegas): #rads
             print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ----------------------')
             #  def run_floquet_analysis(self, plotIVP, out_spec_matrix = [], n_harmonics=3, rtol=1e-4):
-            self.operating_points[iom].run_floquet_analysis(plotIVP=False, out_spec_matrix = out_spec_matrix, n_harmonics=n_harmonics, rtol=rtol)
+            self.operating_points[iom].run_floquet_analysis(plotIVP=False, rtol=rtol)
+            self.operating_points[iom].run_modal_projection(out_spec_matrix = None, n_harmonics = 3)
+
         self.__offloadFloquet()
         self.__campbellData()
  
@@ -135,23 +139,42 @@ class floquetParametricRange:
 
     def __offloadFloquet(self):
         '''Onwards it's offload calculations. I want to pack these too'''
-        for iom, omega in enumerate(self.omegas): #rads
-            self.eigenvalues_exp_corrected_for_range[iom] = np.array(self.operating_points[iom].results["eigenvalues"])
-            self.max_index_for_range[iom] = np.array(self.operating_points[iom].results["max_index"])
-            self.participation_factor_for_range[iom] = np.array(self.operating_points[iom].results["participation_factor"])
-            max_index_for_range = np.array(self.operating_points[iom].results["max_index"])
-            self.off_indices[iom] = max_index_for_range - max_index_for_range[:, 0, :][:, None, :]
-            self.ifreq0[iom] = self.operating_points[iom].results["ifreq0"]
-            all_modes = self.off_indices.reshape(self.off_indices.shape[0], -1, order='F')
-            unique_indices, idx = np.unique(all_modes, return_index=True)
-            self.unique_indices = unique_indices[np.argsort(idx)]
+        unique_indices = np.empty(len(self.omegas), dtype=object)
+        for iom, omega in enumerate(self.omegas):  # rads
+            # store results per omega
+            self.eigenvalues_exp_corrected_for_range[iom] = np.array(
+                self.operating_points[iom].results['eigenvalues_exp_corrected']
+            )
+            self.max_index_for_range[iom] = np.array(
+                self.operating_points[iom].results['max_index']
+            )
+            self.participation_factor_for_range[iom] = np.array(
+                self.operating_points[iom].results['participation_factor']
+            )
+            
+            # compute offsets
+            max_index_for_range= np.array(self.operating_points[iom].results['max_index'])
+            self.off_indices[iom] = max_index_for_range - max_index_for_range[0, :][None, :] # recode this part
+            
+            # store ifreq0
+            self.ifreq0[iom] = self.operating_points[iom].results['ifreq0']
+
+            # flatten **only this omega's indices**, not all omegas
+            all_modes = self.off_indices[iom].reshape(-1, order='F')  # (n_modes * n_harmonics,)
+            unique_indices[iom], idx = np.unique(all_modes, return_index=True)
+        
+        # flatten all arrays into one 1D array
+        all_numbers = np.concatenate(unique_indices)
+        # get unique numbers, sorted
+        self.unique_indices = np.unique(all_numbers)
 
     def __campbellData(self):
         unique_indices = self.unique_indices
-        eigenvalues_exp_corrected_for_range = self.eigenvalues_exp_corrected_for_range
+        eigenvalues_exp_corrected_for_range = np.stack(self.eigenvalues_exp_corrected_for_range, axis=0)
         max_index_for_range = self.max_index_for_range
         omegas = self.omegas
-        participation_factor_for_range = self.participation_factor_for_range
+        pf = np.stack(self.participation_factor_for_range, axis=0)
+        participation_factor_for_range = pf
         eigenvalues_unique = np.zeros((len(omegas), len(unique_indices), eigenvalues_exp_corrected_for_range.shape[2]), dtype=complex)
         f_d = np.zeros((len(omegas), len(unique_indices), eigenvalues_exp_corrected_for_range.shape[2]), dtype=complex)
         f_0 = np.zeros_like(f_d)
@@ -159,11 +182,24 @@ class floquetParametricRange:
         pf_index_unique = np.zeros((len(omegas), len(unique_indices), eigenvalues_exp_corrected_for_range.shape[2]))
         
         ''' vectorial instead of '''
-        for iom, omega in enumerate(omegas): #rads
-            for iind in range(len(unique_indices)):
-                eigenvalues_unique [iom, iind, :] = eigenvalues_exp_corrected_for_range[iom, 0, :] + 1j * np.tile(unique_indices[None, :] * omega, (self.operating_points[iom].dofs, 1))[:,iind]
-                pf_index_unique[iom, iind, :] = max_index_for_range[iom,0,:] + unique_indices[iind]+self.operating_points[iom].ifreq0
-            f_d[iom], f_0[iom], zeta[iom] = computeDamping(eigenvalues_unique[iom,:,:])
+        for iom, omega in enumerate(omegas):  # loop over operating points
+            ndof = self.operating_points[iom].dofs
+            for iind, h in enumerate(unique_indices):  # loop over harmonics
+                for idof in range(ndof):  # loop over DOFs
+                    base_eig = eigenvalues_exp_corrected_for_range[iom, 0, idof]
+                    # shift imaginary part
+                    shifted = base_eig + 1j * h * omega
+                    eigenvalues_unique[iom, iind, idof] = shifted
+                    pf_index_unique[iom, iind, idof] = (
+                        max_index_for_range[iom][0][idof]
+                        + h
+                        + self.operating_points[iom].results['ifreq0']
+                    )
+
+            # compute damping AFTER filling all harmonics for this omega
+            f_d[iom], f_0[iom], zeta[iom] = computeDamping(
+                eigenvalues_unique[iom, :, :]
+            )
 
         n_omega, n_harmonics, n_modes = participation_factor_for_range.shape
         # fancy indexing along axis=1 (harmonics)
@@ -173,12 +209,12 @@ class floquetParametricRange:
             np.arange(n_modes)[None, None, :]        # modes axis
         ]
 
-        self.results["f_d"] = f_d
-        self.results["eigenvalues_unique"] = eigenvalues_unique
-        self.results["f_0"] = f_0
-        self.results["zeta"] = zeta
-        self.results["pf_index_unique"] = pf_index_unique
-        self.results["pf_of_interest"] = pf_of_interest
+        self.results['f_d'] = f_d
+        self.results['eigenvalues_unique'] = eigenvalues_unique
+        self.results['f_0'] = f_0
+        self.results['zeta'] = zeta
+        self.results['pf_index_unique'] = pf_index_unique
+        self.results['pf_of_interest'] = pf_of_interest
 
     def sort_results(self):
         mode_shapes = self.results["mode_shapes"]

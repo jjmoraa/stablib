@@ -10,8 +10,6 @@ omega = 1
 sine_cosine = floquetParametric(omega, A)
 sine_cosine.run_floquet_analysis(
     plotIVP=True,
-    out_spec_matrix=None,
-    n_harmonics=3,
     rtol=1e-4
 )
 print('done\n')

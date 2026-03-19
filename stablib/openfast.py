@@ -1,6 +1,7 @@
 from collections import defaultdict
 from stablib import state_space
 from pathlib import Path
+from stablib import floquetParam
 import numpy as np
 
 def get_operating_point(path):
@@ -140,3 +141,13 @@ def make_matrix_interpolator(matrices, period=None, positions=None, kind='cubic'
     else:
         # Input is physical time; scale and wrap
         return lambda t: interp_func((t / period) % 1.0).reshape(nStates, nStates)
+
+class turbine(floquetParam.floquetParametricRange):
+
+    def __init__(self, foldername):
+        # call openfast interpreter to get arguments from folder
+        arrays_by_op, A_interp, u_vel, omegas, T_rotor = openFAST_A_interpreter(foldername)
+
+        # call the parent constructor
+        super().__init__(omegas, arrays_by_op, param=u_vel, param_label='u velocity')
+        
