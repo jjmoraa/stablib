@@ -22,6 +22,7 @@ ACDCs
 from collections import defaultdict
 from stablib import state_space
 from stablib import openfast
+from stablib.openfast import openFAST_A_interpreter
 from pathlib import Path
 import numpy as np
 
@@ -37,48 +38,48 @@ def get_operating_point(path):
 
 folder = Path('/home/jjmoraa/work/python_libs/stablib/stablib/models/Land NREL 5MW 8DOF no wind')
 
-#arrays_by_op, interp_arrays_by_op, u_vel, omega_rad, T_rotor = openFAST_A_interpreter(folder)
+arrays_by_op, interp_arrays_by_op, u_vel, omega_rad, T_rotor = openFAST_A_interpreter(folder)
 
 
-# files = list(folder.glob("*.lin"))   # change .txt to your extension
-# files_by_op = defaultdict(list)   # Define a dictionary to hold the filenames for each operating point
-# dfs_by_op = defaultdict(list)   # Define a dictionary to hold the dataframes for each operating point
+files = list(folder.glob("*.lin"))   # change .txt to your extension
+files_by_op = defaultdict(list)   # Define a dictionary to hold the filenames for each operating point
+dfs_by_op = defaultdict(list)   # Define a dictionary to hold the dataframes for each operating point
 
-# # Here we group files by operating point using a dictionary
-# for f in files:
-#     op = get_operating_point(f)
-#     files_by_op[op].append(f)
-#     #lin = state_space.readLinFiles(folder_path, print=True)
+# Here we group files by operating point using a dictionary
+for f in files:
+    op = get_operating_point(f)
+    files_by_op[op].append(f)
+    #lin = state_space.readLinFiles(folder_path, print=True)
 
-# # Now we make sure the files are sorted (maybe unnecessary because acdc will do it for you)
-# for op in files_by_op:
-#     files_by_op[op].sort(
-#         key=lambda p: int(p.stem.split(".")[-1])
-#     )
+# Now we make sure the files are sorted (maybe unnecessary because acdc will do it for you)
+for op in files_by_op:
+    files_by_op[op].sort(
+        key=lambda p: int(p.stem.split(".")[-1])
+    )
 
-# # Now we make the dataframes and store them in the other dictionary
+# Now we make the dataframes and store them in the other dictionary
 
-# arrays_by_op = {}
-# metadata_by_op = {}
-# u_vel = {}
-# omega_rad = {}
-# T_rotor = {}
+arrays_by_op = {}
+metadata_by_op = {}
+u_vel = {}
+omega_rad = {}
+T_rotor = {}
 
-# for op in files_by_op:
-#     arrays_by_op[op] = []   # ← initialize list for this OP
+for op in files_by_op:
+    arrays_by_op[op] = []   # ← initialize list for this OP
 
-#     for f in files_by_op[op]:
-#         lin, lin_ = openfast.readLinFiles(f, print=False)
+    for f in files_by_op[op]:
+        lin, lin_ = openfast.readLinFiles(f, print=False)
 
-#         A = np.asarray(lin['A'])   # safer than np.array
-#         arrays_by_op[op].append(A)
-#         metadata_by_op[op] = lin['y']   # store metadata (same for all files at this OP)
-#         #u_vel[op] = lin['y'].iloc[0]['Wind1VelX_[m/s]']
-#         omega_rad[op] = lin['y'].iloc[0]['RotSpeed_[rpm]'] * 2 * np.pi / 60
-#         T_rotor[op] = 2 * np.pi / omega_rad[op]
+        A = np.asarray(lin['A'])   # safer than np.array
+        arrays_by_op[op].append(A)
+        metadata_by_op[op] = lin['y']   # store metadata (same for all files at this OP)
+        #u_vel[op] = lin['y'].iloc[0]['Wind1VelX_[m/s]']
+        omega_rad[op] = lin['y'].iloc[0]['RotSpeed_[rpm]'] * 2 * np.pi / 60
+        T_rotor[op] = 2 * np.pi / omega_rad[op]
 
-#     # convert list → true NumPy array (Nt, n, n)
-#     arrays_by_op[op] = np.stack(arrays_by_op[op], axis=0)
+    # convert list → true NumPy array (Nt, n, n)
+    arrays_by_op[op] = np.stack(arrays_by_op[op], axis=0)
 
 u_vel = np.array(list(u_vel.values()))
 omega_rad = np.array(list(omega_rad.values()))
