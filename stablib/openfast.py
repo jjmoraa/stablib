@@ -2,7 +2,12 @@ from collections import defaultdict
 from stablib import state_space
 from pathlib import Path
 from stablib import floquetParam
+from stablib.floquet import test_periodic
 import numpy as np
+import openfast_toolbox
+
+
+from openfast_toolbox.io.fast_linearization_file import FASTLinearizationFile
 
 def get_operating_point(path):
     """
@@ -19,7 +24,7 @@ def openFAST_A_interpreter(folder):
     
     :param folder: Description
     """
-    files = list(folder.glob("*.lin"))   # change .txt to your extension
+    files = list(folder.glob("*.lin"))   # list all documents in the folder
     files_by_op = defaultdict(list)   # Define a dictionary to hold the filenames for each operating point
     dfs_by_op = defaultdict(list)   # Define a dictionary to hold the dataframes for each operating point
 
@@ -38,46 +43,71 @@ def openFAST_A_interpreter(folder):
     # Now we make the dataframes and store them in the other dictionary
 
     arrays_by_op = {}
+    interp_arrays_by_op = {}
     metadata_by_op = {}
-    u_vel = {}
-    omega_rad = {}
-    T_rotor = {}
+    u_vel = np.zeros(len(files_by_op))
+    omega_rad = np.zeros(len(files_by_op))
+    T_rotor = np.zeros(len(files_by_op))
 
     for op in files_by_op:
-        arrays_by_op[op] = []   # ← initialize list for this OP
+        #arrays_by_op[op] = []   # ← initialize list for this OP
+        
+        for ifile, f in enumerate(files_by_op[op]):
+            dfs, lin = readLinFiles(f, print=False)
 
-        for f in files_by_op[op]:
-            lin = state_space.readLinFiles(f, print=False)
+            if ifile ==0:
+                n_az = len((files_by_op[op])) # number of azimuthal positions by op
+                n_dof = np.asarray(dfs['A']).shape[0] # get problem size for preallocation
+                arrays_by_op[op] = np.zeros((n_az, n_dof, n_dof))
+            
 
-            A = np.asarray(lin['A'])   # safer than np.array
-            arrays_by_op[op].append(A)
-            metadata_by_op[op] = lin['y']   # store metadata (same for all files at this OP)
-            u_vel[op] = lin['y'].iloc[0]['Wind1VelX_[m/s]']
-            omega_rad[op] = lin['y'].iloc[0]['RotSpeed_[rpm]'] * 2 * np.pi / 60
+            A = np.asarray(dfs['A'])   # safer than np.array
+            arrays_by_op[op][ifile] = A
+            metadata_by_op[op] = lin['header']  # store metadata (same for all files at this OP)
+
+            u_vel[op] = float(metadata_by_op[op][10].split(':')[1].split()[0]) # This takes the string from header and splits into b/a : and then b/a space
+            omega_rad[op] = float(metadata_by_op[op][8].split(':')[1].split()[0])
             T_rotor[op] = 2 * np.pi / omega_rad[op]
 
         # convert list → true NumPy array (Nt, n, n)
-        arrays_by_op[op] = np.stack(arrays_by_op[op], axis=0)
+        # arrays_by_op[op] = np.stack(arrays_by_op[op], axis=0)
 
-    u_vel = np.array(list(u_vel.values()))
-    omega_rad = np.array(list(omega_rad.values()))
-    T_rotor = np.array(list(T_rotor.values()))
+        # # Check periodicity: coarse tolerance (2nd decimal)
+        # if np.allclose(arrays_by_op[op][0], arrays_by_op[op][-1], atol=1e-2):
+        #     print(f"[ OK ] Coarse periodicity check passed for OP {op}.")
+        # else:
+        #     print(f"[WARN] Coarse periodicity mismatch for OP {op}.")
+
+        # # Check fine tolerance (3rd decimal)
+        # if not np.allclose(arrays_by_op[op][0], arrays_by_op[op][-1], atol=1e-3):
+        #     print(f"[INFO] Small mismatch detected for OP {op} at fine tolerance. Enforcing periodicity by replacing last matrix.")
+        #     arrays_by_op[op][-1] = arrays_by_op[op][0]  # enforce periodicity
+
+        # it looks like openfast does not repeat the period at the end. To build the interpolator, that has to be done
+        # Repeat the first matrix at the end to ensure periodicity <consult to Branlard>
+        # arrays_by_op[op] = np.concatenate([arrays_by_op[op], [arrays_by_op[op][0]]], axis=0)
+
+        # Now create the interpolator with the fixed array
+        interp_func = state_space.make_matrix_interpolator(arrays_by_op[op], period=T_rotor[op])
+
+        # Store interpolator
+        interp_arrays_by_op[op] = interp_func
+
+        # Validation stage: Check if the interpolation matches the original data
+        nMatrices = arrays_by_op[op].shape[0]
+        tol = 1e-3  # Tolerance for matrix comparison
+
+        test_periodic(interp_arrays_by_op[op], T_rotor[op])
+
+
+    u_vel = np.array(u_vel)
+    omega_rad = np.array(omega_rad)
+    T_rotor = np.array(T_rotor)
 
     #arrays by op is a 3d array of shape [op, linfiles, n, n]
     print("Done loading dataframes.")
 
-    # Suppose you have 36 A matrices for an operating point
-    A_matrices = arrays_by_op[1]  # shape (36, nStates, nStates)
-
-    # Create interpolator
-    A_interp = state_space.make_matrix_interpolator(A_matrices)
-
-    return arrays_by_op, A_interp, u_vel, omega_rad, T_rotor
-
-
-import openfast_toolbox
-import os
-from openfast_toolbox.io.fast_linearization_file import FASTLinearizationFile
+    return arrays_by_op, interp_arrays_by_op, u_vel, omega_rad, T_rotor
 
 def readLinFiles(filename, print = False):
     # --- Open and convert files to DataFrames
@@ -96,51 +126,7 @@ def readLinFiles(filename, print = False):
         print('A:')
         print(dfs['A'])
 
-    return dfs
-
-from scipy.interpolate import interp1d
-import numpy as np
-
-def make_matrix_interpolator(matrices, period=None, positions=None, kind='cubic'):
-    """
-    Create a lambda function to interpolate between a series of matrices.
-    
-    If only one matrix is given, returns a constant function.
-
-    Parameters
-    ----------
-    matrices : np.ndarray
-        Array of shape (nMatrices, nStates, nStates) containing the matrices to interpolate.
-    positions : np.ndarray, optional
-        Positions corresponding to each matrix. If None, uses np.linspace(0, 1, nMatrices).
-    kind : str
-        Type of interpolation ('linear', 'cubic', etc.)
-    period : float, optional
-        Period in seconds. If given, the returned lambda accepts time in seconds.
-
-    Returns
-    -------
-    interp_lambda : function
-        Lambda function interp_lambda(pos_or_time) that returns an interpolated matrix.
-        If period is given, input is in seconds; otherwise input is normalized [0,1].
-    """
-    nMatrices, nStates, _ = matrices.shape
-
-    if nMatrices == 1:
-        return lambda pos: matrices[0]
-
-    if positions is None:
-        positions = np.linspace(0, 1, nMatrices)
-    
-    matrices_flat = matrices.reshape(nMatrices, -1)
-    interp_func = interp1d(positions, matrices_flat, axis=0, kind=kind, fill_value="extrapolate")
-    
-    if period is None:
-        # Input is normalized position
-        return lambda pos: interp_func(pos).reshape(nStates, nStates)
-    else:
-        # Input is physical time; scale and wrap
-        return lambda t: interp_func((t / period) % 1.0).reshape(nStates, nStates)
+    return dfs, lin
 
 class turbine(floquetParam.floquetParametricRange):
 
@@ -149,5 +135,5 @@ class turbine(floquetParam.floquetParametricRange):
         arrays_by_op, A_interp, u_vel, omegas, T_rotor = openFAST_A_interpreter(foldername)
 
         # call the parent constructor
-        super().__init__(omegas, arrays_by_op, param=u_vel, param_label='u velocity')
+        super().__init__(omegas, A_interp, param=u_vel, param_label='u velocity')
         

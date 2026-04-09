@@ -23,16 +23,16 @@ class floquetParametric:
         self.dofs = np.shape(A(0))[0]
         self.results = {}
 
-        if self.param is not None:
-            assert(len(self.omega)) == len(self.param)
+        # if self.param is not None:
+            # assert(len(self.omega)) == len(self.param) its a bug
 
-            def plot____(self):
-                if self.param is not None:
-                    x = self.param
-                    label = self.param_label
-                else:
-                    x = self.omega
-                    label = 'Angular speed'
+            # def plot____(self):
+            #     if self.param is not None:
+            #         x = self.param
+            #         label = self.param_label
+            #     else:
+            #         x = self.omega
+            #         label = 'Angular speed'
 
     def run_floquet_analysis(self, plotIVP, rtol=1e-4):
         """
