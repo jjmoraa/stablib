@@ -1,7 +1,18 @@
 from pathlib import Path
 from stablib import openfast
 from stablib.openfast import turbine
-foldername = Path('/home/jjmoraa/work/python_libs/stablib/stablib/models/Land NREL 5MW 8DOF no wind')
+
+# Start from the directory where this script lives
+script_dir = Path(__file__).parent
+
+# Go one level up to reach the library root
+lib_root = script_dir.parent
+
+# Relative path to your model folder inside the library
+foldername = lib_root / 'stablib' / 'models' / 'Land NREL 5MW 8DOF no wind'
+
+# If you want it as a string for functions that expect strings
+foldername_str = str(foldername)
 
 nrel5MW = turbine(foldername)
 nrel5MW.runAnalyses(out_spec_matrix = None, harmonics=3, rtol=1e-2)
