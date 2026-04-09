@@ -1,0 +1,491 @@
+{
+	"HasWind": true,
+	"RotSpeeds": [
+		6.9719415,
+		7.8237386,
+		11.726536,
+		12.099914,
+		12.099914
+	],
+	"WindSpeeds": [
+		1,
+		5.75,
+		10.5,
+		15.25,
+		20
+	],
+	"Lines": [
+		{
+			"ID": 0,
+			"Label": "Line 1",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 0,
+					"OpPtID": 0,
+					"ModeID": 0,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 0.32191646,
+					"DampedFreqHz": 0.3219139,
+					"DampingRatio": 0.0039921715
+				},
+				{
+					"Line": 0,
+					"OpPtID": 1,
+					"ModeID": 0,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 0.32188052,
+					"DampedFreqHz": 0.32187682,
+					"DampingRatio": 0.0047990824
+				},
+				{
+					"Line": 0,
+					"OpPtID": 2,
+					"ModeID": 0,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 0.32191783,
+					"DampedFreqHz": 0.32191205,
+					"DampingRatio": 0.0059933616
+				},
+				{
+					"Line": 0,
+					"OpPtID": 3,
+					"ModeID": 0,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 0.3222553,
+					"DampedFreqHz": 0.32224953,
+					"DampingRatio": 0.0059968154
+				},
+				{
+					"Line": 0,
+					"OpPtID": 4,
+					"ModeID": 0,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 0.32272166,
+					"DampedFreqHz": 0.3227137,
+					"DampingRatio": 0.0070283366
+				}
+			]
+		},
+		{
+			"ID": 1,
+			"Label": "Line 2",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 1,
+					"OpPtID": 0,
+					"ModeID": 1,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 0.33654994,
+					"DampedFreqHz": 0.33596894,
+					"DampingRatio": 0.058734313
+				},
+				{
+					"Line": 1,
+					"OpPtID": 1,
+					"ModeID": 1,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 0.3378683,
+					"DampedFreqHz": 0.3371946,
+					"DampingRatio": 0.06311967
+				},
+				{
+					"Line": 1,
+					"OpPtID": 2,
+					"ModeID": 1,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 0.34193504,
+					"DampedFreqHz": 0.3410645,
+					"DampingRatio": 0.07131158
+				},
+				{
+					"Line": 1,
+					"OpPtID": 3,
+					"ModeID": 1,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 0.3433638,
+					"DampedFreqHz": 0.34226432,
+					"DampingRatio": 0.07996174
+				},
+				{
+					"Line": 1,
+					"OpPtID": 4,
+					"ModeID": 1,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 0.34403074,
+					"DampedFreqHz": 0.34285036,
+					"DampingRatio": 0.08276701
+				}
+			]
+		},
+		{
+			"ID": 2,
+			"Label": "Line 3",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 2,
+					"OpPtID": 0,
+					"ModeID": 2,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 0.5914451,
+					"DampedFreqHz": 0.51505274,
+					"DampingRatio": 0.49157044
+				},
+				{
+					"Line": 2,
+					"OpPtID": 1,
+					"ModeID": 2,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 0.5901021,
+					"DampedFreqHz": 0.49031952,
+					"DampingRatio": 0.5564124
+				},
+				{
+					"Line": 2,
+					"OpPtID": 2,
+					"ModeID": 2,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 0.6135956,
+					"DampedFreqHz": 0.36795518,
+					"DampingRatio": 0.800247
+				},
+				{
+					"Line": 2,
+					"OpPtID": 3,
+					"ModeID": 2,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 0.6159293,
+					"DampedFreqHz": 0.34500092,
+					"DampingRatio": 0.8284042
+				},
+				{
+					"Line": 2,
+					"OpPtID": 4,
+					"ModeID": 2,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 0.59630984,
+					"DampedFreqHz": 0.33532622,
+					"DampingRatio": 0.8269091
+				}
+			]
+		},
+		{
+			"ID": 3,
+			"Label": "Line 4",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 3,
+					"OpPtID": 0,
+					"ModeID": 3,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 0.7016119,
+					"DampedFreqHz": 0.6410455,
+					"DampingRatio": 0.4064448
+				},
+				{
+					"Line": 3,
+					"OpPtID": 1,
+					"ModeID": 3,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 0.7077341,
+					"DampedFreqHz": 0.63012546,
+					"DampingRatio": 0.4552921
+				},
+				{
+					"Line": 3,
+					"OpPtID": 2,
+					"ModeID": 3,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 0.7484372,
+					"DampedFreqHz": 0.57015944,
+					"DampingRatio": 0.64781237
+				},
+				{
+					"Line": 3,
+					"OpPtID": 3,
+					"ModeID": 3,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 0.7464352,
+					"DampedFreqHz": 0.55191493,
+					"DampingRatio": 0.67326534
+				},
+				{
+					"Line": 3,
+					"OpPtID": 4,
+					"ModeID": 3,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 0.726142,
+					"DampedFreqHz": 0.5413234,
+					"DampingRatio": 0.6665294
+				}
+			]
+		},
+		{
+			"ID": 4,
+			"Label": "Line 5",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 4,
+					"OpPtID": 0,
+					"ModeID": 4,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 0.80196875,
+					"DampedFreqHz": 0.74707454,
+					"DampingRatio": 0.36361164
+				},
+				{
+					"Line": 4,
+					"OpPtID": 1,
+					"ModeID": 4,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 0.82007045,
+					"DampedFreqHz": 0.7510465,
+					"DampingRatio": 0.40156236
+				},
+				{
+					"Line": 4,
+					"OpPtID": 2,
+					"ModeID": 4,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 0.9048343,
+					"DampedFreqHz": 0.7590438,
+					"DampingRatio": 0.54432243
+				},
+				{
+					"Line": 4,
+					"OpPtID": 3,
+					"ModeID": 4,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 0.9071555,
+					"DampedFreqHz": 0.74918866,
+					"DampingRatio": 0.5638668
+				},
+				{
+					"Line": 4,
+					"OpPtID": 4,
+					"ModeID": 4,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 0.88991517,
+					"DampedFreqHz": 0.740123,
+					"DampingRatio": 0.55525804
+				}
+			]
+		},
+		{
+			"ID": 5,
+			"Label": "Line 6",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 5,
+					"OpPtID": 0,
+					"ModeID": 5,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 1.8415321,
+					"DampedFreqHz": 1.8270284,
+					"DampingRatio": 0.1252589
+				},
+				{
+					"Line": 5,
+					"OpPtID": 1,
+					"ModeID": 5,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 1.8270767,
+					"DampedFreqHz": 1.8086773,
+					"DampingRatio": 0.14156036
+				},
+				{
+					"Line": 5,
+					"OpPtID": 2,
+					"ModeID": 5,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 1.7551048,
+					"DampedFreqHz": 1.7183806,
+					"DampingRatio": 0.20349601
+				},
+				{
+					"Line": 5,
+					"OpPtID": 3,
+					"ModeID": 5,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 1.7807254,
+					"DampedFreqHz": 1.7367325,
+					"DampingRatio": 0.2209065
+				},
+				{
+					"Line": 5,
+					"OpPtID": 4,
+					"ModeID": 5,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 1.7931577,
+					"DampedFreqHz": 1.7586145,
+					"DampingRatio": 0.19533738
+				}
+			]
+		},
+		{
+			"ID": 6,
+			"Label": "Line 7",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 6,
+					"OpPtID": 0,
+					"ModeID": 6,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 1.9806978,
+					"DampedFreqHz": 1.9676313,
+					"DampingRatio": 0.114674196
+				},
+				{
+					"Line": 6,
+					"OpPtID": 1,
+					"ModeID": 6,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 1.979854,
+					"DampedFreqHz": 1.9634124,
+					"DampingRatio": 0.12860766
+				},
+				{
+					"Line": 6,
+					"OpPtID": 2,
+					"ModeID": 6,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 1.9700086,
+					"DampedFreqHz": 1.9384353,
+					"DampingRatio": 0.17831755
+				},
+				{
+					"Line": 6,
+					"OpPtID": 3,
+					"ModeID": 6,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 1.997124,
+					"DampedFreqHz": 1.9591718,
+					"DampingRatio": 0.19402513
+				},
+				{
+					"Line": 6,
+					"OpPtID": 4,
+					"ModeID": 6,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 2.0082965,
+					"DampedFreqHz": 1.9784194,
+					"DampingRatio": 0.17184974
+				}
+			]
+		},
+		{
+			"ID": 7,
+			"Label": "Line 8",
+			"Color": "",
+			"Dash": null,
+			"Hidden": false,
+			"Points": [
+				{
+					"Line": 7,
+					"OpPtID": 0,
+					"ModeID": 7,
+					"RotSpeed": 6.9719415,
+					"WindSpeed": 1,
+					"NaturalFreqHz": 2.0729809,
+					"DampedFreqHz": 2.0601258,
+					"DampingRatio": 0.11119377
+				},
+				{
+					"Line": 7,
+					"OpPtID": 1,
+					"ModeID": 7,
+					"RotSpeed": 7.8237386,
+					"WindSpeed": 5.75,
+					"NaturalFreqHz": 2.0862088,
+					"DampedFreqHz": 2.070141,
+					"DampingRatio": 0.12387201
+				},
+				{
+					"Line": 7,
+					"OpPtID": 2,
+					"ModeID": 7,
+					"RotSpeed": 11.726536,
+					"WindSpeed": 10.5,
+					"NaturalFreqHz": 2.1397278,
+					"DampedFreqHz": 2.1097424,
+					"DampingRatio": 0.16682549
+				},
+				{
+					"Line": 7,
+					"OpPtID": 3,
+					"ModeID": 7,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 15.25,
+					"NaturalFreqHz": 2.1769235,
+					"DampedFreqHz": 2.1411254,
+					"DampingRatio": 0.18060517
+				},
+				{
+					"Line": 7,
+					"OpPtID": 4,
+					"ModeID": 7,
+					"RotSpeed": 12.099914,
+					"WindSpeed": 20,
+					"NaturalFreqHz": 2.1916015,
+					"DampedFreqHz": 2.1634583,
+					"DampingRatio": 0.15974359
+				}
+			]
+		}
+	]
+}

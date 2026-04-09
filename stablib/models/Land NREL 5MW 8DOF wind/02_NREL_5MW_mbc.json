@@ -1,0 +1,417 @@
+{
+	"RotSpeed": 11.726536207010847,
+	"WindSpeed": 10.5,
+	"DescStates": [
+		"ED 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m",
+		"ED 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m",
+		"ED 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m",
+		"ED First time derivative of 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m/s",
+		"ED First time derivative of 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m/s",
+		"ED First time derivative of 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m/s",
+		"ED First time derivative of 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m/s"
+	],
+	"Azimuths": [
+		0.0045,
+		0.1811,
+		0.3499,
+		0.5265,
+		0.703,
+		0.8795,
+		1.0484,
+		1.2249,
+		1.4014,
+		1.578,
+		1.7468,
+		1.9234,
+		2.0999,
+		2.2764,
+		2.4453,
+		2.6218,
+		2.7983,
+		2.9672,
+		3.1437,
+		3.3202,
+		3.4968,
+		3.6656,
+		3.8422,
+		4.0187,
+		4.1952,
+		4.3641,
+		4.5406,
+		4.7171,
+		4.8937,
+		5.0625,
+		5.2391,
+		5.4156,
+		5.5921,
+		5.761,
+		5.9375,
+		6.114
+	],
+	"OrderX": {
+		"Num": 16,
+		"NumFixed": 4,
+		"NumRotating": 12,
+		"NumTriplets": 4,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10,
+			11,
+			12,
+			13,
+			14,
+			15
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			],
+			[
+				10,
+				11,
+				12
+			],
+			[
+				13,
+				14,
+				15
+			]
+		]
+	},
+	"OrderX2": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			]
+		]
+	},
+	"OrderX2dot": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			8,
+			9,
+			10,
+			11,
+			12,
+			13,
+			14,
+			15
+		],
+		"Triplets": [
+			[
+				10,
+				11,
+				12
+			],
+			[
+				13,
+				14,
+				15
+			]
+		]
+	},
+	"OrderX1": {
+		"Num": 0,
+		"NumFixed": 0,
+		"NumRotating": 0,
+		"NumTriplets": 0,
+		"Indices": [],
+		"Triplets": []
+	},
+	"OrderU": {
+		"Num": 66,
+		"NumFixed": 6,
+		"NumRotating": 60,
+		"NumTriplets": 20,
+		"Indices": [
+			0,
+			1,
+			2,
+			6,
+			7,
+			8,
+			3,
+			4,
+			5,
+			9,
+			28,
+			47,
+			10,
+			29,
+			48,
+			11,
+			30,
+			49,
+			12,
+			31,
+			50,
+			13,
+			32,
+			51,
+			14,
+			33,
+			52,
+			15,
+			34,
+			53,
+			16,
+			35,
+			54,
+			17,
+			36,
+			55,
+			18,
+			37,
+			56,
+			19,
+			38,
+			57,
+			20,
+			39,
+			58,
+			21,
+			40,
+			59,
+			22,
+			41,
+			60,
+			23,
+			42,
+			61,
+			24,
+			43,
+			62,
+			25,
+			44,
+			63,
+			26,
+			45,
+			64,
+			27,
+			46,
+			65
+		],
+		"Triplets": [
+			[
+				3,
+				4,
+				5
+			],
+			[
+				9,
+				28,
+				47
+			],
+			[
+				10,
+				29,
+				48
+			],
+			[
+				11,
+				30,
+				49
+			],
+			[
+				12,
+				31,
+				50
+			],
+			[
+				13,
+				32,
+				51
+			],
+			[
+				14,
+				33,
+				52
+			],
+			[
+				15,
+				34,
+				53
+			],
+			[
+				16,
+				35,
+				54
+			],
+			[
+				17,
+				36,
+				55
+			],
+			[
+				18,
+				37,
+				56
+			],
+			[
+				19,
+				38,
+				57
+			],
+			[
+				20,
+				39,
+				58
+			],
+			[
+				21,
+				40,
+				59
+			],
+			[
+				22,
+				41,
+				60
+			],
+			[
+				23,
+				42,
+				61
+			],
+			[
+				24,
+				43,
+				62
+			],
+			[
+				25,
+				44,
+				63
+			],
+			[
+				26,
+				45,
+				64
+			],
+			[
+				27,
+				46,
+				65
+			]
+		]
+	},
+	"OrderY": {
+		"Num": 36,
+		"NumFixed": 24,
+		"NumRotating": 0,
+		"NumTriplets": 0,
+		"Indices": [
+			0,
+			1,
+			2,
+			7,
+			8,
+			9,
+			10,
+			11,
+			12,
+			21,
+			22,
+			23,
+			24,
+			25,
+			26,
+			27,
+			28,
+			29,
+			30,
+			31,
+			32,
+			33,
+			34,
+			35
+		],
+		"Triplets": []
+	},
+	"OrderEigen": {
+		"Num": 8,
+		"NumFixed": 2,
+		"NumRotating": 6,
+		"NumTriplets": 2,
+		"Indices": [
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7
+		],
+		"Triplets": [
+			[
+				2,
+				3,
+				4
+			],
+			[
+				5,
+				6,
+				7
+			]
+		]
+	},
+	"DOFsEigen": [
+		"ED 1st tower fore-aft bending mode DOF (internal DOF index = DOF_TFA1), m",
+		"ED 1st tower side-to-side bending mode DOF (internal DOF index = DOF_TSS1), m",
+		"ED 1st flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,1)), m",
+		"ED 1st flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,1)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 1 (internal DOF index = DOF_BF(1,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 2 (internal DOF index = DOF_BF(2,2)), m",
+		"ED 2nd flapwise bending-mode DOF of blade 3 (internal DOF index = DOF_BF(3,2)), m"
+	]
+}
