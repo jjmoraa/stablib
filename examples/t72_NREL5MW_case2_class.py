@@ -16,6 +16,7 @@ foldername_str = str(foldername)
 
 nrel5MW = turbine(foldername)
 nrel5MW.runAnalyses(out_spec_matrix = None, harmonics=3, rtol=1e-2)
+nrel5MW.sort_results()
 
 u_vel = nrel5MW.param
 #model_5dof.index_off - results
@@ -28,7 +29,7 @@ import numpy as np
 physical_dofs = int(nrel5MW.results['f_0'].shape[-1]/2);
 zeroth_frequency = int(round(nrel5MW.results['f_0'].shape[1]/2));
 freqs = range((zeroth_frequency - 1),(zeroth_frequency + 1))
-f0 = nrel5MW.results['f_0'][:,freqs,:]  # assuming shape (n_omegas, n_harmonics, n_dof)
+f0 = nrel5MW.q_of_interest['vf_0_sorted'][:,zeroth_frequency,:]  # assuming shape (n_omegas, n_harmonics, n_dof)
 f0_flat = f0.reshape(f0.shape[0], -1)  # shape = (n_omegas, n_harmonics * n_dof)
 
 '''

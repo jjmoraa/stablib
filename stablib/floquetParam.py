@@ -102,12 +102,14 @@ class floquetParametricRange:
         self.label = param_label
         self.operating_points = np.empty(len(omegas), dtype=object)
         self.eigenvalues_exp_corrected_for_range = np.empty(len(omegas), dtype=object)
+        self.mode_shapes = np.empty(len(omegas), dtype=object)
         self.participation_factor_for_range = np.empty(len(omegas), dtype=object)
         self.max_index_for_range = np.empty(len(omegas), dtype=object)
         self.off_indices = np.empty(len(omegas), dtype=object)
         self.unique_indices = np.empty(len(omegas), dtype=object)
         self.ifreq0 = np.empty(len(omegas), dtype=object)
         self.results = {}
+        self.q_of_interest = {}
 
         self.__createOPobjects()
 
@@ -142,6 +144,9 @@ class floquetParametricRange:
         unique_indices = np.empty(len(self.omegas), dtype=object)
         for iom, omega in enumerate(self.omegas):  # rads
             # store results per omega
+            self.mode_shapes[iom] = np.array(
+                self.operating_points[iom].results['mode_shapes']
+            )
             self.eigenvalues_exp_corrected_for_range[iom] = np.array(
                 self.operating_points[iom].results['eigenvalues_exp_corrected']
             )
@@ -217,12 +222,12 @@ class floquetParametricRange:
         self.results['pf_of_interest'] = pf_of_interest
 
     def sort_results(self):
-        mode_shapes = self.results["mode_shapes"]
+        mode_shapes = self.mode_shapes
         f_0 = self.results["f_0"]
         f_d = self.results["f_d"]
         zeta = self.results["zeta"]
         pf_of_interest = self.results["pf_of_interest"]
-        unique_indices = self.results["unique_indices"]
+        unique_indices = self.unique_indices
         
         # sort the modes
         mode_shapes_sorted, assignment_array = mac_sort_modes(mode_shapes, use_macx=False, debug=False)
