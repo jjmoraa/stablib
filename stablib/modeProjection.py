@@ -341,7 +341,7 @@ def check_real(vector, name="vector"):
 
 
 
-def mode_projection_multiple_harmonics_v2(C, Q, V, t, n_harmonics=1, plot=False, sanityChecks=False):
+def mode_projection_multiple_harmonics_v2(C, Q, V, t, n_harmonics=1, plot=False, sanityChecks=False, flag = 'top'):
 
     # Theory dictates last timestep must be removed
     t = t[:-1]
@@ -427,27 +427,65 @@ def mode_projection_multiple_harmonics_v2(C, Q, V, t, n_harmonics=1, plot=False,
         participation_factor_check = norms_check / norm_per_mode
         if np.allclose(participation_factor, participation_factor_check, atol=1e-8):
             print("[ OK ] Participation factors are good")
-
-    # --- Find top N harmonics per mode
-    max_col_indices = np.zeros((n_harmonics, n), dtype=int)
-    max_values = np.zeros((n_harmonics, n))
-
     
-    for j in range(n):  # iterate over modes
-        top_idx = np.argsort(participation_factor[:, j])[::-1][:n_harmonics]  # descending order
-        max_col_indices[:, j] = top_idx - ifreq0  # optional: shift by zero-frequency index
-        max_values[:, j] = participation_factor[top_idx, j]
+    if flag == 'top':
+        
+        # --- Find top N harmonics per mode
+        max_col_indices = np.zeros((n_harmonics, n), dtype=int)
+        max_values = np.zeros((n_harmonics, n))
+        
+        for j in range(n):  # iterate over modes
+            top_idx = np.argsort(participation_factor[:, j])[::-1][:n_harmonics]  # descending order
+            max_col_indices[:, j] = top_idx - ifreq0  # optional: shift by zero-frequency index
+            max_values[:, j] = participation_factor[top_idx, j]
 
-    print('Top harmonic indices per mode:', max_col_indices)
+        print('Top harmonic indices per mode:', max_col_indices)
 
-    # pre-allocate array for top participation values
-    max_participation_factor = np.zeros_like(max_col_indices, dtype=float)
-    # n_modes = participation_factor.shape[1]
+        # pre-allocate array for top participation values
+        # max_participation_factor = np.zeros_like(max_col_indices, dtype=float)
+        # n_modes = participation_factor.shape[1]
 
-    # We are going to output them all so then we can select only the unique values outside of this function
-    # for j in range(n_modes):
-    #     max_participation_factor[:, j] = participation_factor[max_col_indices[:, j], j]
+        # We are going to output them all so then we can select only the unique values outside of this function
+        # for j in range(n_modes):
+        #     max_participation_factor[:, j] = participation_factor[max_col_indices[:, j], j]
     #     # --- Return results (same as before, max_values and max_indices now 2D)
+
+    elif flag == 'fan':
+
+        # --- Find top N harmonics per mode
+        max_col_indices = np.zeros((n_harmonics*2 + 1, n), dtype=int)
+        max_values = np.zeros((n_harmonics*2 + 1, n))
+
+        for j in range(n):  # modes
+
+            # 1. dominant harmonic
+            peak_idx = np.argmax(participation_factor[:, j])
+
+            # 2. full fan (n below + center + n above)
+            fan_idx = np.arange(
+                peak_idx - n_harmonics,
+                peak_idx + n_harmonics + 1
+            )
+
+            # 3. clip to valid frequency range
+            valid_mask = (
+                (fan_idx >= 0) &
+                (fan_idx < participation_factor.shape[0])
+            )
+            fan_idx = fan_idx[valid_mask]
+
+            # 4. optional padding to keep fixed size (important for downstream code)
+            if len(fan_idx) < (2 * n_harmonics + 1):
+                pad_size = (2 * n_harmonics + 1) - len(fan_idx)
+                fan_idx = np.pad(fan_idx, (0, pad_size), mode='edge')
+
+            max_col_indices[:, j] = fan_idx - ifreq0
+            max_values[:, j] = participation_factor[fan_idx, j]
+
+        print('Fan harmonic indices per mode:', max_col_indices)
+
+    max_participation_factor = np.zeros_like(max_col_indices, dtype=float) # we should fix this at some point
+
     return max_values, max_col_indices, max_participation_factor, basis, out_spec_basis, fourier_coefficients, participation_factor, freqs, ifreq0
 
 def check_real(vector, name="vector"):

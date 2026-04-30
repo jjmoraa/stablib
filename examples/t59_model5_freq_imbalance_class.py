@@ -4,12 +4,13 @@ import numpy as np
 
 import stablib as stab
 from stablib.floquetParam import floquetParametricRange
-from stablib.models import model5DOFs_mass_imbalance
+from stablib.models import model5DOFs_mass_imbalance_freq, model5DOFs_mass_imbalance
 # --- Define constants
 m = 1000
 l = 100
 M = 200000
-imbalance = 0 #unit %
+m_imbalance = 0 #unit %
+f_imbalance = 0 #unit %
 edgNatFreq_hz = 0.7  # Edgewise frequency in Hz
 edgNatFreq_rad = edgNatFreq_hz * 2 * np.pi  # Convert to rad/s
 kx = 200000
@@ -21,9 +22,9 @@ A_vector = [None]*len(omegas)
 
 for iom, omega in enumerate(omegas):
 
-    Mt = lambda t, omega=omega: model5DOFs_mass_imbalance.mass(M, m, imbalance, l, omega, t)
-    Kt = lambda t, omega=omega: model5DOFs_mass_imbalance.stiffness(edgNatFreq_rad, m, imbalance, l, kx, ky, omega, t)
-    Ct = lambda t, omega=omega: model5DOFs_mass_imbalance.damping(m, imbalance, l, omega, t)
+    Mt = lambda t, omega=omega: model5DOFs_mass_imbalance.mass(M, m, m_imbalance, l, omega, t)
+    Kt = lambda t, omega=omega: model5DOFs_mass_imbalance_freq.stiffness(edgNatFreq_rad, m, m_imbalance,f_imbalance, l, kx, ky, omega, t)
+    Ct = lambda t, omega=omega: model5DOFs_mass_imbalance.damping(m, m_imbalance, l, omega, t)
 
     A_vector[iom] = lambda t, Mt=Mt, Ct=Ct, Kt=Kt: stab.state_space.A_fromMCK(Mt(t), Ct(t), Kt(t))
 
@@ -82,7 +83,8 @@ plt.tight_layout()
 
 
 
-imbalance = 0.5 #unit %
+m_imbalance = 0 #unit %
+f_imbalance = 0.5 #unit %
 edgNatFreq_hz = 0.7  # Edgewise frequency in Hz
 edgNatFreq_rad = edgNatFreq_hz * 2 * np.pi  # Convert to rad/s
 kx = 200000
@@ -94,14 +96,14 @@ A_vector = [None]*len(omegas)
 
 for iom, omega in enumerate(omegas):
 
-    Mt = lambda t, omega=omega: model5DOFs_mass_imbalance.mass(M, m, imbalance, l, omega, t)
-    Kt = lambda t, omega=omega: model5DOFs_mass_imbalance.stiffness(edgNatFreq_rad, m, imbalance, l, kx, ky, omega, t)
-    Ct = lambda t, omega=omega: model5DOFs_mass_imbalance.damping(m, imbalance, l, omega, t)
+    Mt = lambda t, omega=omega: model5DOFs_mass_imbalance.mass(M, m, m_imbalance, l, omega, t)
+    Kt = lambda t, omega=omega: model5DOFs_mass_imbalance_freq.stiffness(edgNatFreq_rad, m, m_imbalance,f_imbalance, l, kx, ky, omega, t)
+    Ct = lambda t, omega=omega: model5DOFs_mass_imbalance.damping(m, m_imbalance, l, omega, t)
 
     A_vector[iom] = lambda t, Mt=Mt, Ct=Ct, Kt=Kt: stab.state_space.A_fromMCK(Mt(t), Ct(t), Kt(t))
 
 model_5dof = floquetParametricRange(omegas, A_vector)
-model_5dof.runAnalyses(out_spec_matrix = None, harmonics=3, rtol=1e-4)
+model_5dof.runAnalyses(out_spec_matrix = None, harmonics=1, rtol=1e-4)
 model_5dof.sort_results()
 
 #model_5dof.index_off - results

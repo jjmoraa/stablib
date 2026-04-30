@@ -9,30 +9,28 @@ script_dir = Path(__file__).parent
 lib_root = script_dir.parent
 
 # Relative path to your model folder inside the library
-foldername = lib_root / 'stablib' / 'models' / 'Land NREL 5MW 8DOF no wind'
+foldername = lib_root / 'stablib' / 'models' / 'Land NREL 5MW 8DOF wind'
 
 # If you want it as a string for functions that expect strings
 foldername_str = str(foldername)
 
 nrel5MW = turbine(foldername)
-nrel5MW.runAnalyses(out_spec_matrix = None, harmonics=3, rtol=1e-2)
+nrel5MW.runAnalyses(out_spec_matrix = None, harmonics=1, rtol=1e-2, flag = 'fan')
 nrel5MW.sort_results()
 nrel5MW.sort_harmonics()
 
-omegas = nrel5MW.omegas
+u_vel = nrel5MW.param
 #model_5dof.index_off - results
 print(f'\ndone')
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Convert omega from rad/s to Hz
-omega_RPM = 60 * omegas / (2 * np.pi)
-
 # Extract results
 physical_dofs = int(nrel5MW.results['f_0'].shape[-1]/2);
 zeroth_frequency = int(round(nrel5MW.results['f_0'].shape[1]/2));
-f0 = nrel5MW.q_of_interest['vf_0_sorted'][:,zeroth_frequency,:]  # assuming shape (n_omegas, n_harmonics, n_dof)
+freqs = range((zeroth_frequency - 2),(zeroth_frequency + 2))
+f0 = nrel5MW.q_of_interest['vf_0_harmonics_sorted'][:,:,:]  # assuming shape (n_omegas, n_harmonics, n_dof)
 f0_flat = f0.reshape(f0.shape[0], -1)  # shape = (n_omegas, n_harmonics * n_dof)
 
 '''
@@ -42,7 +40,7 @@ Discuss with Branlard
 '''
 plt.figure(figsize=(8, 6))
 for i in range(f0_flat.shape[1]):
-    plt.plot(omega_RPM, f0_flat[:, i], 'o-', label=f'mode {i+1}')
+    plt.plot(u_vel, f0_flat[:, i], 'o-', label=f'mode {i+1}')
 
 plt.xlabel('Rotation speed (Hz)')
 plt.ylabel('f_0 (Hz)')

@@ -66,7 +66,7 @@ class floquetParametric:
         self.results["eigenvectors_exp"] = eigenvectors_exp
         self.results["q_values"] = q_values
 
-    def run_modal_projection(self, out_spec_matrix = None, n_harmonics = 3):
+    def run_modal_projection(self, out_spec_matrix = None, n_harmonics = 3, flag = 'top'):
         omega = self.omega
         period = 2*np.pi / omega
         num_points=10001 #give odd number to get even number in fft (very important)
@@ -83,7 +83,7 @@ class floquetParametric:
             [max_vals, max_index, participation_factor, basis, out_spec_basis, \
              fourier_coefficients, participation_factor, freqs, ifreq0] \
             = mode_projection_multiple_harmonics_v2\
-                (out_spec_matrix, q_values, eigenvectors_exp, time, n_harmonics, plot=False, sanityChecks=False)
+                (out_spec_matrix, q_values, eigenvectors_exp, time, n_harmonics, plot=False, sanityChecks=False, flag = flag) #ASK
         # correct index with strongest frequency
         eigenvalues_exp_corrected = eigenvalues_exp + 1j*(max_index)*(omega)
 
@@ -125,23 +125,26 @@ class floquetParametricRange:
             self.operating_points[iom] = floquet_obj
         print(f'done')
     
-    def runAnalyses(self, out_spec_matrix = None, harmonics=3, rtol=1e-4):
+    def runAnalyses(self, out_spec_matrix = None, harmonics=3, rtol=1e-4, flag = 'top'):
         
         omegas = self.omegas
         for iom, omega in enumerate(omegas): #rads
             print(f'------------------{iom+1}/{len(omegas)}, omega = {omega} ----------------------')
             #  def run_floquet_analysis(self, plotIVP, out_spec_matrix = [], n_harmonics=3, rtol=1e-4):
             self.operating_points[iom].run_floquet_analysis(plotIVP=False, rtol=rtol)
-            self.operating_points[iom].run_modal_projection(out_spec_matrix = None, n_harmonics = 3)
+            self.operating_points[iom].run_modal_projection(out_spec_matrix = None, n_harmonics = 3, flag = flag)
 
-        self.__offloadFloquet()
+        #self.__offloadFloquet(harmonics, 'max index tracking')
+        self.__offloadFloquet(harmonics)
         self.__campbellData()
  
 
 
-    def __offloadFloquet(self):
+    def __offloadFloquet(self, harmonics, op_mode = 'fixed'):
         '''Onwards it's offload calculations. I want to pack these too'''
         unique_indices = np.empty(len(self.omegas), dtype=object)
+
+
         for iom, omega in enumerate(self.omegas):  # rads
             # store results per omega
             self.mode_shapes[iom] = np.array(
@@ -156,11 +159,11 @@ class floquetParametricRange:
             self.participation_factor_for_range[iom] = np.array(
                 self.operating_points[iom].results['participation_factor']
             )
-            
+
             # compute offsets
             max_index_for_range= np.array(self.operating_points[iom].results['max_index'])
             self.off_indices[iom] = max_index_for_range - max_index_for_range[0, :][None, :] # recode this part
-            
+
             # store ifreq0
             self.ifreq0[iom] = self.operating_points[iom].results['ifreq0']
 
@@ -168,10 +171,18 @@ class floquetParametricRange:
             all_modes = self.off_indices[iom].reshape(-1, order='F')  # (n_modes * n_harmonics,)
             unique_indices[iom], idx = np.unique(all_modes, return_index=True)
         
-        # flatten all arrays into one 1D array
-        all_numbers = np.concatenate(unique_indices)
-        # get unique numbers, sorted
-        self.unique_indices = np.unique(all_numbers)
+
+
+        if op_mode == 'max index tracking':
+            # flatten all arrays into one 1D array
+            all_numbers = np.concatenate(unique_indices)
+            # get unique numbers, sorted
+            self.unique_indices = np.unique(all_numbers)
+
+
+        elif op_mode == 'fixed':
+            self.unique_indices = np.arange(-harmonics, harmonics + 1) # recode this part
+
 
     def __campbellData(self):
         unique_indices = self.unique_indices
@@ -248,6 +259,89 @@ class floquetParametricRange:
         self.q_of_interest["vf_d_sorted"] = vf_d_sorted
         self.q_of_interest["zeta_for_range_sorted"] = zeta_for_range_sorted
         self.q_of_interest["participation_factor_for_range_sorted"] = participation_factor_for_range_sorted
+
+    def sort_harmonics(self):
+
+        f_0 = np.array(self.q_of_interest["vf_0_sorted"])
+        f_d = np.array(self.q_of_interest["vf_d_sorted"])
+        zeta = np.array(self.q_of_interest["zeta_for_range_sorted"])
+        pf_of_interest = np.array(self.q_of_interest["participation_factor_for_range_sorted"])
+
+        unique_indices = self.unique_indices
+
+        n_pairs = len(unique_indices) // 2
+
+        INF = float('inf')
+
+        # DP tables
+        dp = np.full((n_pairs, 2), np.inf)
+        parent = np.full((n_pairs, 2), -1, dtype=int)
+
+        def get_pair(i, s):
+            i_bot = unique_indices[i]
+            i_top = unique_indices[-(i + 1)]
+
+            if s == 0:
+                return (f_0[:, i_bot, :],
+                        f_0[:, i_top, :])
+            else:
+                return (f_0[:, i_top, :],
+                        f_0[:, i_bot, :])
+
+        # init
+        dp[0, 0] = 0
+        dp[0, 1] = 0
+
+        # DP over harmonic pairs
+        for i in range(1, n_pairs):
+            for s in [0, 1]:
+                x1, y1 = get_pair(i, s)
+
+                for sp in [0, 1]:
+                    px1, py1 = get_pair(i - 1, sp)
+
+                    cost = np.sum((x1 - px1)**2 + (y1 - py1)**2)
+                    val = dp[i - 1, sp] + cost
+
+                    if val < dp[i, s]:
+                        dp[i, s] = val
+                        parent[i, s] = sp
+
+        # backtrack pair decisions
+        pair_assignment = np.zeros(n_pairs, dtype=int)
+
+        s = np.argmin(dp[-1])
+
+        for i in reversed(range(n_pairs)):
+            pair_assignment[i] = s
+            s = parent[i, s] if i > 0 else 0
+
+        # APPLY SWAPS DIRECTLY (no intermediate assignment vector)
+        f0_corrected = f_0.copy()
+        fd_corrected = f_d.copy()
+        zeta_corrected = zeta.copy()
+        pf_corrected = pf_of_interest.copy()
+
+        for i in range(n_pairs):
+            if pair_assignment[i] == 1:
+
+                i_bot = unique_indices[i]
+                i_top = unique_indices[-(i + 1)]
+
+                # swap harmonic slices across ALL operating points & DOFs
+                f0_corrected[:, [i_bot, i_top], :] = f0_corrected[:, [i_top, i_bot], :]
+                fd_corrected[:, [i_bot, i_top], :] = fd_corrected[:, [i_top, i_bot], :]
+                zeta_corrected[:, [i_bot, i_top]] = zeta_corrected[:, [i_top, i_bot]]
+                pf_corrected[:, [i_bot, i_top]] = pf_corrected[:, [i_top, i_bot]]
+
+        # store results
+        self.q_of_interest["vf_0_harmonics_sorted"] = f0_corrected
+        self.q_of_interest["vf_d_harmonics_sorted"] = fd_corrected
+        self.q_of_interest["zeta_for_range_harmonics_sorted"] = zeta_corrected
+        self.q_of_interest["participation_factor_for_range_harmonics_sorted"] = pf_corrected
+
+        # optional: store swap plan
+        self.q_of_interest["harmonic_pair_assignment"] = pair_assignment
 
     def plot_campbell(self):
         """

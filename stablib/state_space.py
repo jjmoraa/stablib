@@ -194,6 +194,71 @@ def mac_sort_modes(mode_shapes, use_macx=False, debug=False):
 
     return sorted_modes_array, assignment_array
 
+def mac_sort_modes_pf(mode_shapes, participation_factor, use_macx=False, debug=False):
+    """
+    MAC-based sorting of mode shapes across frequencies using MACX or standard MAC.
+    Hungarian assignment ensures unique mode pairing.
+
+    Parameters
+    ----------
+    mode_shapes : list of np.ndarray
+        List of mode shapes at each frequency. Each element has shape (m, n),
+        where m = number of state variables, n = number of modes.
+    use_macx : bool
+        If True, use MACX for complex modes. Otherwise, use standard MAC.
+    debug : bool
+        If True, plot MAC matrix for each frequency step.
+
+    Returns
+    -------
+    sorted_modes_array : np.ndarray
+        Mode shapes sorted across frequencies, shape (n_freqs, m, n_modes).
+    assignment_array : np.ndarray
+        Assignment indices used at each frequency, shape (n_freqs, n_modes)
+    """
+    n_freqs = len(mode_shapes)
+    m, n_modes = mode_shapes[0].shape
+
+    # initialize
+    sorted_modes_list = [mode_shapes[0]]  # first frequency stays
+    assignment_array = np.zeros((n_freqs, n_modes), dtype=int)
+    assignment_array[0, :] = np.arange(n_modes)  # first frequency assignment
+
+    # loop over frequencies
+    for i in range(1, n_freqs):
+        phi_prev = sorted_modes_list[-1]  # previous frequency
+        phi_curr = mode_shapes[i]         # current frequency
+
+        # Compute MAC matrix
+        if use_macx:
+            MAC = calculate_macx_matrix(phi_prev, phi_curr)
+        else:
+            MAC = calculate_mac_matrix(phi_prev, phi_curr)
+
+        # Hungarian assignment (maximize MAC)
+        cost = 1 - MAC  # maximize similarity -> minimize cost
+        row_ind, col_ind = linear_sum_assignment(cost)
+
+        # Reorder current modes
+        phi_curr_sorted = phi_curr[:, col_ind]
+
+        # store
+        sorted_modes_list.append(phi_curr_sorted)
+        assignment_array[i, :] = col_ind
+
+        # debug plot
+        if debug:
+            plt.figure(figsize=(6,5))
+            sns.heatmap(MAC, annot=True, fmt=".2f", cmap='viridis')
+            plt.title(f'MAC Matrix between freq {i-1} and {i}')
+            plt.xlabel('Current Modes')
+            plt.ylabel('Previous Modes')
+            plt.show()
+
+    # Stack all frequencies into a single 3D array: (n_freqs, m, n_modes)
+    sorted_modes_array = np.stack(sorted_modes_list, axis=0)
+
+    return sorted_modes_array, assignment_array
 def reorder_parameters_by_assignment(parameters_list, assignment_list):
     """
     Reorder mode-dependent parameters using a MAC assignment list.
@@ -230,6 +295,46 @@ def reorder_parameters_by_assignment(parameters_list, assignment_list):
     return sorted_parameters
 
 def calculate_macx_matrix(mode_prev, mode_next):
+    """
+    Computes the MACX matrix between two mode shape sets.
+    MACX penalizes cross-orthogonality, giving a stronger criterion than MAC.
+
+    Parameters
+    ----------
+    mode_prev : ndarray (ndof × nmodes)
+        Modes at previous condition
+    mode_next : ndarray (ndof × nmodes)
+        Modes at current condition
+
+    Returns
+    -------
+    MACX : ndarray (nmodes × nmodes)
+    """
+
+    n_modes = mode_prev.shape[1]
+    MACX = np.zeros((n_modes, n_modes))
+
+    # Precompute all auto/inner products
+    A = mode_prev.T @ mode_prev        # previous mode Gram matrix
+    B = mode_next.T @ mode_next        # next mode Gram matrix
+    C = mode_prev.T @ mode_next        # cross-terms
+
+    # Standard MAC numerator and denominator
+    MAC_num = np.abs(C)**2
+    MAC_den = np.outer(np.diag(A), np.diag(B))
+
+    MAC = MAC_num / MAC_den            # base MAC
+
+    # MACX adds orthogonality correction
+    for i in range(n_modes):
+        for j in range(n_modes):
+            cross_prev = np.sum(MAC[i, :]) - MAC[i, j]   # coupling of prev-i to remaining
+            cross_next = np.sum(MAC[:, j]) - MAC[i, j]   # coupling of next-j to remaining
+            MACX[i, j] = MAC[i, j] / (1 + cross_prev + cross_next)
+
+    return MACX
+
+def calculate_macx_matrix_pf(mode_prev, mode_next):
     """
     Computes the MACX matrix between two mode shape sets.
     MACX penalizes cross-orthogonality, giving a stronger criterion than MAC.
