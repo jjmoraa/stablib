@@ -2,6 +2,7 @@
 
 import numpy as np
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # locals
 from collections import defaultdict
@@ -351,3 +352,59 @@ class floquetParametricRange:
         omegas = self.omegas
 
         ...
+
+    def plot_riva(self, dofs):
+        """
+        Generate Riva stylefig = plt.figure(figsize=(12, 6), constrained_layout=True)
+
+        # ---------------------------------------------------
+        # Tile layout
+        # ---------------------------------------------------
+        #
+        #  -------------------------
+        # |           | top right  |
+        # |           |------------|
+        # | left big  | bot right  |
+        # |           |            |
+        #  -------------------------
+        #
+
+        """
+        fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+        gs = fig.add_gridspec(
+            nrows=2,
+            ncols=2,
+            width_ratios=[2.5, 1],
+            height_ratios=[1, 1]
+        )
+
+        # Setup axes
+        ax_left = fig.add_subplot(gs[:, 0]) #left
+        ax_top = fig.add_subplot(gs[0, 1]) #right top
+        ax_bottom = fig.add_subplot(gs[1, 1]) # right bottom
+
+        # Setup data vectors
+        omegas = self.omegas
+        f_0 = self.q_of_interest['vf_0_sorted'][:,:,:]  # assuming shape (n_omegas, dofs, harmonics)
+        zeta = self.q_of_interest['zeta_for_range_sorted'][:,:,:]  # assuming shape (n_omegas, ...)
+        pf_of_interest = np.array(self.q_of_interest["participation_factor_for_range_sorted"])
+
+        if np.isscalar(dofs):
+            dofs = [dofs]
+        # plot dofs on each axes
+        for dof in dofs:
+            ax_left.plot(omegas,f_0[:,:,dof])
+            ax_top.plot(omegas,zeta[:,:,dof])
+            ax_bottom.plot(omegas,pf_of_interest[:,:,dof])
+
+        # ---------------------------------------------------
+        # Example formatting
+        # ---------------------------------------------------
+        ax_left.set_title('Natural Frequencies')
+        ax_top.set_title('Damping')
+        ax_bottom.set_title('Participation Factor')
+
+        for ax in [ax_left, ax_top, ax_bottom]:
+            ax.grid(True)
+
+        plt.show()
