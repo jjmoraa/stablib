@@ -414,3 +414,157 @@ def make_matrix_interpolator(matrices, period=None, positions=None, kind='cubic'
     else:
         # Input is physical time; scale and wrap
         return lambda t: interp_func((t / period) % 1.0).reshape(nStates, nStates)
+
+def mbc(
+    A,
+    psi,
+    Omega,
+    rotating_groups,
+):
+    """
+    Generalized Multi-Blade Coordinate (MBC) operator.
+
+    Parameters
+    ----------
+    A : (n,n) ndarray
+        Periodic system matrix.
+
+    psi : float
+        Rotor azimuth [rad].
+
+    Omega : float
+        Rotor speed [rad/s].
+
+    rotating_groups : list[list[int]]
+        Lists of equivalent cyclic DOFs.
+
+        Example:
+        rotating_groups = [
+            [4,17,33],   # blade copies of same coordinate
+            [5,18,34],
+            [6,19,35],
+        ]
+
+    Returns
+    -------
+    A_mbc : (n,n) ndarray
+        MBC transformed system matrix.
+
+    T : (n,n) ndarray
+        Coordinate transformation matrix.
+
+    Tdot : (n,n) ndarray
+        Time derivative of T.
+    """
+
+    n = A.shape[0]
+
+    T = np.eye(n, dtype=complex)
+    Tdot = np.zeros((n, n), dtype=complex)
+
+    for group in rotating_groups:
+
+        nb = len(group)
+
+        blade_angles = (
+            psi
+            + 2*np.pi*np.arange(nb)/nb
+        )
+
+        # ---------------------------------
+        # Fourier / cyclic symmetry block
+        # ---------------------------------
+
+        F = np.zeros((nb, nb), dtype=complex)
+        dF = np.zeros((nb, nb), dtype=complex)
+
+        for k in range(nb):
+
+            phase = np.exp(
+                -1j * k * blade_angles
+            )
+
+            F[k, :] = phase / np.sqrt(nb)
+
+            dF[k, :] = (
+                -1j * k * Omega * phase
+                / np.sqrt(nb)
+            )
+
+        idx = np.ix_(group, group)
+
+        T[idx] = F
+        Tdot[idx] = dF
+
+    # ---------------------------------
+    # MBC transformed system
+    # ---------------------------------
+
+    A_mbc = (
+        (T @ A + Tdot)
+        @ np.linalg.solve(T, np.eye(n))
+    )
+
+    return A_mbc, T, Tdot
+
+def mbc_state_space(A, psi, Omega, num_structural_dofs, blade_dofs):
+    """
+    Applies real-valued MBC transformation to a 3-blade state-space matrix.
+    Assumes state vector layout is x = [q, q_dot]
+    
+    Parameters:
+    -----------
+    A : (n, n) ndarray - State space matrix at current time slice
+    psi : float - Rotor azimuth angle (rad)
+    Omega : float - Rotor speed (rad/s)
+    num_structural_dofs : int - Number of DOFs in original M, C, K matrices (e.g., 5)
+    blade_dofs : list of int - 0-indexed positions of the 3 blades in M, C, K (e.g., [1, 2, 3])
+    """
+    n = A.shape[0]
+    N = num_structural_dofs
+    
+    # 1. Build the building block 3x3 Coleman Transformation matrix (MBC to Physical)
+    # psi_b = psi + 2*pi*(b-1)/3
+    psi_b = psi + 2 * np.pi * np.array([0, 1, 2]) / 3
+    
+    T3 = np.zeros((3, 3))
+    T3[:, 0] = 1.0                          # Collective/Multi-rotational
+    T3[:, 1] = np.cos(psi_b)                # Cosine component
+    T3[:, 2] = np.sin(psi_b)                # Sine component
+    
+    # Derivative of T3 with respect to time (dpsi/dt = Omega)
+    dT3 = np.zeros((3, 3))
+    dT3[:, 0] = 0.0
+    dT3[:, 1] = -Omega * np.sin(psi_b)
+    dT3[:, 2] =  Omega * np.cos(psi_b)
+    
+    # 2. Embed into structural size identity matrices (System size N)
+    T_q = np.eye(N)
+    dT_q = np.zeros((N, N))
+    
+    # Map the blade DOFs explicitly
+    for i, src_idx in enumerate(blade_dofs):
+        for j, dest_idx in enumerate(blade_dofs):
+            T_q[src_idx, dest_idx] = T3[i, j]
+            dT_q[src_idx, dest_idx] = dT3[i, j]
+            
+    # 3. Construct full state-space transformation matrix T_ss (Size 2N x 2N)
+    # For x = [q; q_dot] and y = [q_mbc; q_mbc_dot]:
+    # x_dot = T_q * y_dot + dT_q * y
+    T_ss = np.zeros((n, n))
+    T_ss[0:N, 0:N] = T_q
+    T_ss[N:n, N:n] = T_q       # Velocity block uses T_q
+    T_ss[N:n, 0:N] = dT_q      # Cross coupling due to derivative of displacement mapping
+    
+    # Time derivative of state-space transformation matrix
+    dT_ss = np.zeros((n, n))
+    dT_ss[0:N, 0:N] = dT_q
+    dT_ss[N:n, N:n] = dT_q
+    # (Assuming Omega is constant, d^2(T_q)/dt^2 would go in the bottom left block if needed,
+    # but the explicit state equation handles it via the identity relation substitution)
+    
+    # 4. Apply explicit state-space coordinate change: A_mbc = T^-1 * A * T - T^-1 * T_dot
+    T_inv = np.linalg.inv(T_ss)
+    A_mbc = T_inv @ A @ T_ss - T_inv @ dT_ss
+    
+    return A_mbc

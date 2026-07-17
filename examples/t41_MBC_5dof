@@ -1,0 +1,92 @@
+import numpy as np
+
+# locals
+
+import stablib as stab
+from stablib.floquetParam import floquetParametricRange
+from stablib.models import model5DOFs_mass_imbalance
+from stablib.state_space import mbc_state_space
+# --- Define constants
+m = 1000
+l = 100
+M = 200000
+imbalance = 0 #unit %
+edgNatFreq_hz = 0.7  # Edgewise frequency in Hz
+edgNatFreq_rad = edgNatFreq_hz * 2 * np.pi  # Convert to rad/s
+kx = 200000
+ky = 350000
+
+# define rotation speeds of interest
+omegas = np.linspace(0.1, 1, 10) #should be (0.1, 1, 100)
+A_vector = [None]*len(omegas)
+
+for iom, omega in enumerate(omegas):
+
+    Mt = lambda t, omega=omega: model5DOFs_mass_imbalance.mass(M, m, imbalance, l, omega, t)
+    Kt = lambda t, omega=omega: model5DOFs_mass_imbalance.stiffness(edgNatFreq_rad, m, imbalance, l, kx, ky, omega, t)
+    Ct = lambda t, omega=omega: model5DOFs_mass_imbalance.damping(m, imbalance, l, omega, t)
+
+    A_vector[iom] = lambda t, Mt=Mt, Ct=Ct, Kt=Kt: stab.state_space.A_fromMCK(Mt(t), Ct(t), Kt(t))
+
+Nt = 100
+t_vec = np.linspace(0, 2*np.pi, Nt, endpoint=False)
+psi_vec = t_vec  # same thing since normalized phase
+
+A_mbc_all = [None] * len(omegas)
+
+for iom, omega in enumerate(omegas):
+
+    A_fun = A_vector[iom]
+
+    A_time = np.zeros((Nt, 10, 10), dtype=float)
+    A_mbc_time = np.zeros((Nt, 10, 10), dtype=complex)
+
+    # -------------------------------------------------
+    # 1. evaluate A(t, ω)
+    # -------------------------------------------------
+    for k, t in enumerate(t_vec):
+
+        A_time[k] = A_fun(t)
+
+    # -------------------------------------------------
+    # 2. apply MBC at each phase
+    # -------------------------------------------------
+    for k in range(Nt):
+
+        # -------------------------------------------------
+        # 2. apply MBC at each phase
+        # -------------------------------------------------
+        # Let's assume your structural DOFs total 5, and blade indices are 1, 2, 3.
+        for k in range(Nt):
+            A_mbc_time[k] = mbc_state_space(
+                A=A_time[k],
+                psi=psi_vec[k],
+                Omega=omega,
+                num_structural_dofs=5, 
+                blade_dofs=[1, 2, 3]  # Change this to match your structural layout
+            )
+
+    # store full periodic MBC system for this omega
+    A_mbc_all[iom] = A_mbc_time
+
+import matplotlib.pyplot as plt
+
+n = A_mbc_time.shape[1]
+
+plt.figure(figsize=(10, 6))
+
+for i in range(n):
+    for j in range(n):
+        plt.plot(
+            t_vec,
+            np.real(A_mbc_time[:, i, j]),
+            alpha=0.4
+        )
+
+plt.xlabel("Azimuth / time (rad)")
+plt.ylabel("Re(A_mbc entries)")
+plt.title("All MBC matrix coefficients over one period")
+plt.grid(True)
+plt.show()
+
+print('done\n')

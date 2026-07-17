@@ -51,6 +51,9 @@ class floquetParametric:
         # Time domain solution of the x_dot=Ax system
         with Timer('solve-ivp'):
             sol=solve(At,time,plot=plotIVP)
+            if plotIVP:
+                self.results["STM"]=sol
+
         print('Solution is finished')
 
         with Timer('floquet_eig'):
