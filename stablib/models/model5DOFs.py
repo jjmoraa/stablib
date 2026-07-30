@@ -13,7 +13,7 @@ def mass(M, m, l, omega, t):
         [m * l**2, 0, 0, m * l * np.cos(phi_vals[0]), -m * l * np.sin(phi_vals[0])],
         [0, m * l**2, 0, m * l * np.cos(phi_vals[1]), -m * l * np.sin(phi_vals[1])],
         [0, 0, m * l**2, m * l * np.cos(phi_vals[2]), -m * l * np.sin(phi_vals[2])],
-        [m * l * np.cos(phi_vals[0]), -m * l * np.cos(phi_vals[1]), -m * l * np.cos(phi_vals[2]), M + 3 * m, 0],
+        [m * l * np.cos(phi_vals[0]), m * l * np.cos(phi_vals[1]), m * l * np.cos(phi_vals[2]), M + 3 * m, 0],
         [-m * l * np.sin(phi_vals[0]), -m * l * np.sin(phi_vals[1]), -m * l * np.sin(phi_vals[2]), 0, M + 3 * m]
     ])
 

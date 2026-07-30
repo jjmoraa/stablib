@@ -14,7 +14,7 @@ def mass(M, m, imbalance, l, omega, t):
         [m_imb * l**2, 0, 0, m_imb * l * np.cos(phi_vals[0]), -m_imb * l * np.sin(phi_vals[0])],
         [0, m * l**2, 0, m * l * np.cos(phi_vals[1]), -m * l * np.sin(phi_vals[1])],
         [0, 0, m * l**2, m * l * np.cos(phi_vals[2]), -m * l * np.sin(phi_vals[2])],
-        [m_imb * l * np.cos(phi_vals[0]), -m * l * np.cos(phi_vals[1]), -m * l * np.cos(phi_vals[2]), M + 2 * m + m_imb, 0],
+        [m_imb * l * np.cos(phi_vals[0]), m * l * np.cos(phi_vals[1]), m * l * np.cos(phi_vals[2]), M + 2 * m + m_imb, 0],
         [-m_imb * l * np.sin(phi_vals[0]), -m * l * np.sin(phi_vals[1]), -m * l * np.sin(phi_vals[2]), 0, M + 2 * m + m_imb]
     ])
 

@@ -2,6 +2,7 @@ import numpy as np
 from scipy.linalg import expm
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
+from scipy.linalg import block_diag
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -127,7 +128,22 @@ def calculate_mac_matrix(mode_prev, mode_next):
     return MAC
 
 
-
+def test_periodic(At, period, tol=1e-3):
+    """Tests if At is periodic with the given period."""
+    t0 = 0  # Initial time
+    t1 = period  # One full period later
+    
+    # Compute matrices at t0 and t1
+    A0 = At(t0)
+    A1 = At(t1)
+    
+    # Check if they are approximately equal
+    if np.allclose(A0, A1, atol=tol):
+        print("[ OK ] Matrix is periodic")
+    else:
+        print("[FAIL] Matrix is NOT periodic")
+        raise ValueError("Matrix is not periodic")
+    
 def mac_sort_modes(mode_shapes, use_macx=False, debug=False):
     """
     MAC-based sorting of mode shapes across frequencies using MACX or standard MAC.
@@ -415,156 +431,138 @@ def make_matrix_interpolator(matrices, period=None, positions=None, kind='cubic'
         # Input is physical time; scale and wrap
         return lambda t: interp_func((t / period) % 1.0).reshape(nStates, nStates)
 
-def mbc(
-    A,
-    psi,
-    Omega,
-    rotating_groups,
-):
-    """
-    Generalized Multi-Blade Coordinate (MBC) operator.
 
-    Parameters
-    ----------
-    A : (n,n) ndarray
-        Periodic system matrix.
+def mbc(At, omega, rotating_dofs, debug = False):
+    
+    # Get matrix size by evaluating once
+    n = At(0.0).shape[0]
+    n_q = n // 2
 
-    psi : float
-        Rotor azimuth [rad].
+    # rotating_dofs are indices in the q block only
+    q_rot = list(rotating_dofs)
 
-    Omega : float
-        Rotor speed [rad/s].
+    # non-rotating coordinates in q block
+    q_nr = [i for i in range(n_q) if i not in q_rot]
 
-    rotating_groups : list[list[int]]
-        Lists of equivalent cyclic DOFs.
-
-        Example:
-        rotating_groups = [
-            [4,17,33],   # blade copies of same coordinate
-            [5,18,34],
-            [6,19,35],
-        ]
-
-    Returns
-    -------
-    A_mbc : (n,n) ndarray
-        MBC transformed system matrix.
-
-    T : (n,n) ndarray
-        Coordinate transformation matrix.
-
-    Tdot : (n,n) ndarray
-        Time derivative of T.
-    """
-
-    n = A.shape[0]
-
-    T = np.eye(n, dtype=complex)
-    Tdot = np.zeros((n, n), dtype=complex)
-
-    for group in rotating_groups:
-
-        nb = len(group)
-
-        blade_angles = (
-            psi
-            + 2*np.pi*np.arange(nb)/nb
-        )
-
-        # ---------------------------------
-        # Fourier / cyclic symmetry block
-        # ---------------------------------
-
-        F = np.zeros((nb, nb), dtype=complex)
-        dF = np.zeros((nb, nb), dtype=complex)
-
-        for k in range(nb):
-
-            phase = np.exp(
-                -1j * k * blade_angles
-            )
-
-            F[k, :] = phase / np.sqrt(nb)
-
-            dF[k, :] = (
-                -1j * k * Omega * phase
-                / np.sqrt(nb)
-            )
-
-        idx = np.ix_(group, group)
-
-        T[idx] = F
-        Tdot[idx] = dF
-
-    # ---------------------------------
-    # MBC transformed system
-    # ---------------------------------
-
-    A_mbc = (
-        (T @ A + Tdot)
-        @ np.linalg.solve(T, np.eye(n))
+    # Build MBC ordering:
+    # [q_nonrot, q_rot, qdot_nonrot, qdot_rot]
+    perm = (
+        q_nr +
+        q_rot +
+        [i + n_q for i in q_nr] +
+        [i + n_q for i in q_rot]
     )
 
-    return A_mbc, T, Tdot
+    # Number of q coordinates
+    n_rot_q = len(q_rot)
+    n_nr_q = len(q_nr)
 
-def mbc_state_space(A, psi, Omega, num_structural_dofs, blade_dofs):
-    """
-    Applies real-valued MBC transformation to a 3-blade state-space matrix.
-    Assumes state vector layout is x = [q, q_dot]
+    # For the full state
+    n_rot_dofs = 2 * n_rot_q
+    n_nr_dofs = 2 * n_nr_q
+
+    # Permuted matrix
+    A_perm = lambda t: At(t)[np.ix_(perm, perm)]
+
+    # define the transformation matrices for the degrees of freedom
+
+    def t_curly_1(t):
+        psi = omega*t
+        psi_b = psi + np.array([0, 2*np.pi/3, 4*np.pi/3])
+
+        return np.column_stack((
+                    np.ones(3),
+                    np.cos(psi_b),
+                    np.sin(psi_b)
+                ))
+
+    def t_curly_2(t):
+        psi = omega*t
+        psi_b = psi + np.array([0, 2*np.pi/3, 4*np.pi/3])
+
+        return np.column_stack((
+                    np.zeros(3),
+                    -np.sin(psi_b),
+                    np.cos(psi_b)
+                ))
+
+    def t_curly_3(t):
+        psi = omega*t
+        psi_b = psi + np.array([0, 2*np.pi/3, 4*np.pi/3])
+
+        return np.column_stack((
+                    np.zeros(3),
+                    -np.cos(psi_b),
+                    -np.sin(psi_b)
+                ))
     
-    Parameters:
-    -----------
-    A : (n, n) ndarray - State space matrix at current time slice
-    psi : float - Rotor azimuth angle (rad)
-    Omega : float - Rotor speed (rad/s)
-    num_structural_dofs : int - Number of DOFs in original M, C, K matrices (e.g., 5)
-    blade_dofs : list of int - 0-indexed positions of the 3 blades in M, C, K (e.g., [1, 2, 3])
-    """
-    n = A.shape[0]
-    N = num_structural_dofs
+    def T1(t):
+        T_blocks = [np.eye(n_nr_q,n_nr_q)]
+
+        n_triplets = n_rot_q // 3
+
+        for _ in range(n_triplets):
+            T_blocks.append(t_curly_1(t))
+
+        return block_diag(*T_blocks)
+
+    def T2(t):
+        T_blocks = [np.zeros((n_nr_q, n_nr_q))]
+
+        n_triplets = n_rot_q // 3
+
+        for _ in range(n_triplets):
+            T_blocks.append(t_curly_2(t))
+
+        return block_diag(*T_blocks)
     
-    # 1. Build the building block 3x3 Coleman Transformation matrix (MBC to Physical)
-    # psi_b = psi + 2*pi*(b-1)/3
-    psi_b = psi + 2 * np.pi * np.array([0, 1, 2]) / 3
+    def T3(t):
+        T_blocks = [np.zeros((n_nr_q, n_nr_q))]
+
+        n_triplets = n_rot_q // 3
+
+        for _ in range(n_triplets):
+            T_blocks.append(t_curly_3(t))
+
+        return block_diag(*T_blocks)
     
-    T3 = np.zeros((3, 3))
-    T3[:, 0] = 1.0                          # Collective/Multi-rotational
-    T3[:, 1] = np.cos(psi_b)                # Cosine component
-    T3[:, 2] = np.sin(psi_b)                # Sine component
-    
-    # Derivative of T3 with respect to time (dpsi/dt = Omega)
-    dT3 = np.zeros((3, 3))
-    dT3[:, 0] = 0.0
-    dT3[:, 1] = -Omega * np.sin(psi_b)
-    dT3[:, 2] =  Omega * np.cos(psi_b)
-    
-    # 2. Embed into structural size identity matrices (System size N)
-    T_q = np.eye(N)
-    dT_q = np.zeros((N, N))
-    
-    # Map the blade DOFs explicitly
-    for i, src_idx in enumerate(blade_dofs):
-        for j, dest_idx in enumerate(blade_dofs):
-            T_q[src_idx, dest_idx] = T3[i, j]
-            dT_q[src_idx, dest_idx] = dT3[i, j]
-            
-    # 3. Construct full state-space transformation matrix T_ss (Size 2N x 2N)
-    # For x = [q; q_dot] and y = [q_mbc; q_mbc_dot]:
-    # x_dot = T_q * y_dot + dT_q * y
-    T_ss = np.zeros((n, n))
-    T_ss[0:N, 0:N] = T_q
-    T_ss[N:n, N:n] = T_q       # Velocity block uses T_q
-    T_ss[N:n, 0:N] = dT_q      # Cross coupling due to derivative of displacement mapping
-    
-    # Time derivative of state-space transformation matrix
-    dT_ss = np.zeros((n, n))
-    dT_ss[0:N, 0:N] = dT_q
-    dT_ss[N:n, N:n] = dT_q
-    # (Assuming Omega is constant, d^2(T_q)/dt^2 would go in the bottom left block if needed,
-    # but the explicit state equation handles it via the identity relation substitution)
-    
-    # 4. Apply explicit state-space coordinate change: A_mbc = T^-1 * A * T - T^-1 * T_dot
-    T_inv = np.linalg.inv(T_ss)
-    A_mbc = T_inv @ A @ T_ss - T_inv @ dT_ss
-    
+    def L(t):
+
+        T1m = T1(t)
+        T2m = T2(t)
+
+        return np.block([
+            [T1m,               np.zeros_like(T1m)],
+            [omega*T2m,         T1m]
+        ])
+
+
+    def R(t):
+
+        T2m = T2(t)
+        T3m = T3(t)
+
+        return np.block([
+            [omega*T2m,                     np.zeros_like(T2m)],
+            [omega**2*T3m,                  2*omega*T2m]
+        ])
+
+
+    A_mbc = lambda t: (
+        block_diag(
+            np.linalg.inv(T1(t)),
+            np.linalg.inv(T1(t))
+        )
+        @
+        (
+            A_perm(t) @ L(t)
+            - R(t)
+        )
+    )
+
+    test_periodic(A_mbc,2*np.pi/omega,tol = 0.001)
+
+    if debug:
+        return A_mbc, T1, T2, T3
+
     return A_mbc
