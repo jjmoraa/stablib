@@ -40,7 +40,7 @@ omega_hz = omegas / (2 * np.pi)
 
 # Extract results
 model_5dof.sort_results()
-f0 = model_5dof.q_of_interest['vf_0_sorted'][:,2,:]  # assuming shape (n_omegas, ...)
+f0 = model_5dof.q_of_interest['vf_0_sorted'][:,3,:]  # assuming shape (n_omegas, ...)
 
 # If f0 is 1D → simple plot
 if f0.ndim == 1:
