@@ -1,72 +1,74 @@
-#import unittest
+import unittest
 import numpy as np
 
 from stablib.floquetParam import floquetParametric
 
 
-def test_floquet_sine_cosine():
+class TestFloquetSineCosine(unittest.TestCase):
 
-    # ------------------------------------------------------------------
-    # Problem definition
-    # ------------------------------------------------------------------
+    def test_floquet_sine_cosine(self):
 
-    At = lambda t: np.array([
-        [np.cos(t), -np.sin(t)],
-        [np.sin(t),  np.cos(t)]
-    ])
+        # ------------------------------------------------------------------
+        # Problem definition
+        # ------------------------------------------------------------------
 
-    omega = 1.0
+        At = lambda t: np.array([
+            [np.cos(t), -np.sin(t)],
+            [np.sin(t),  np.cos(t)]
+        ])
 
-    system = floquetParametric(omega, At)
+        omega = 1.0
 
-    system.run_floquet_analysis(
-        plotIVP=False,
-        rtol=1e-4
-    )
+        system = floquetParametric(omega, At)
 
-    # ------------------------------------------------------------------
-    # Numerical solution
-    # ------------------------------------------------------------------
+        system.run_floquet_analysis(
+            plotIVP=False,
+            rtol=1e-4
+        )
 
-    t = system.results["STM"].t
-    y = system.results["STM"].y
+        # ------------------------------------------------------------------
+        # Numerical solution
+        # ------------------------------------------------------------------
 
-    # ------------------------------------------------------------------
-    # Analytical solution
-    # ------------------------------------------------------------------
+        t = system.results["STM"].t
+        y = system.results["STM"].y
 
-    theta = 1.0 - np.cos(t)
-    scale = np.exp(np.sin(t))
+        # ------------------------------------------------------------------
+        # Analytical solution
+        # ------------------------------------------------------------------
 
-    y_exact = np.zeros_like(y)
+        theta = 1.0 - np.cos(t)
+        scale = np.exp(np.sin(t))
 
-    y_exact[0] = scale * np.cos(theta)
-    y_exact[1] = -scale * np.sin(theta)
-    y_exact[2] = scale * np.sin(theta)
-    y_exact[3] = scale * np.cos(theta)
+        y_exact = np.zeros_like(y)
 
-    # ------------------------------------------------------------------
-    # Error
-    # ------------------------------------------------------------------
+        y_exact[0] = scale * np.cos(theta)
+        y_exact[1] = -scale * np.sin(theta)
+        y_exact[2] = scale * np.sin(theta)
+        y_exact[3] = scale * np.cos(theta)
 
-    err = y - y_exact
+        # ------------------------------------------------------------------
+        # Error
+        # ------------------------------------------------------------------
 
-    rmse = np.sqrt(np.mean(err**2))
-    max_abs = np.max(np.abs(err))
-    rel_l2 = np.linalg.norm(err) / np.linalg.norm(y_exact)
+        err = y - y_exact
 
-    # ------------------------------------------------------------------
-    # Assertions
-    # ------------------------------------------------------------------
+        rmse = np.sqrt(np.mean(err**2))
+        max_abs = np.max(np.abs(err))
+        rel_l2 = np.linalg.norm(err) / np.linalg.norm(y_exact)
 
-    assert rmse < 1e-4
-    assert max_abs < 5e-4
-    assert rel_l2 < 1e-4
+        # ------------------------------------------------------------------
+        # Assertions
+        # ------------------------------------------------------------------
 
-    # Floquet multipliers should lie inside/on the unit circle
-    eig = system.results["eigenvalues_mon"]
+        self.assertLess(rmse, 1e-4)
+        self.assertLess(max_abs, 5e-4)
+        self.assertLess(rel_l2, 1e-4)
 
-    assert np.all(np.abs(eig) <= 1.0 + 1e-8)
+        eig = system.results["eigenvalues_mon"]
 
-#if __name__ == '__main__':
-#    unittest.main()
+        self.assertTrue(np.all(np.abs(eig) <= 1.0 + 1e-8))
+
+
+if __name__ == "__main__":
+    unittest.main()
