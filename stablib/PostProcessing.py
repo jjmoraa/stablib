@@ -238,6 +238,100 @@ def evaluateStabilityMonodromy(eigenvalues_mon, doPlot=True):
 
     return stabilityReport
 
+def evaluateStabilityLTI(eigenvalues_lti, doPlot=True):
+    """
+    Evaluates stability of an LTI (MBC-transformed) system from its eigenvalues.
+
+    Parameters
+    ----------
+    eigenvalues_lti : array-like
+        Eigenvalues of the LTI state matrix.
+    doPlot : bool
+        If True, plots eigenvalues on the complex plane.
+
+    Returns
+    -------
+    stabilityReport : dict
+        Dictionary containing:
+            'isStable' : True if all eigenvalues have negative real part
+            'maxRealPart' : largest real part
+            'unstableEigenvalues' : eigenvalues with positive real part
+            'dampingRatios' : modal damping ratios
+            'negativeDampingModes' : damping ratios < 0
+    """
+
+    eigenvalues_lti = np.asarray(eigenvalues_lti)
+
+    realPart = np.real(eigenvalues_lti)
+
+    # Damping ratio
+    mag = np.abs(eigenvalues_lti)
+    dampingRatios = np.full_like(realPart, np.nan, dtype=float)
+
+    nonzero = mag > 0
+    dampingRatios[nonzero] = -realPart[nonzero] / mag[nonzero]
+
+    maxRealPart = np.max(realPart)
+
+    unstable_idx = realPart > 0
+    unstableEigenvalues = eigenvalues_lti[unstable_idx]
+
+    negativeDampingModes = dampingRatios < 0
+
+    isStable = maxRealPart <= 0
+
+    print(f"Maximum real part: {maxRealPart:.4f}")
+
+    if isStable:
+        print("System is stable: all eigenvalues have negative real part.")
+    else:
+        print(f"System is unstable: {len(unstableEigenvalues)} unstable mode(s).")
+        print("Unstable eigenvalues:")
+        print(unstableEigenvalues)
+
+    if np.any(negativeDampingModes):
+        print(f"Negative damping ratios: {dampingRatios[negativeDampingModes]}")
+
+    if doPlot:
+        plt.figure()
+        plt.axhline(0, color='gray', linewidth=0.5)
+        plt.axvline(0, color='k', linestyle='--', linewidth=1.5)
+
+        stable_idx = realPart <= 0
+
+        plt.plot(
+            eigenvalues_lti[stable_idx].real,
+            eigenvalues_lti[stable_idx].imag,
+            'go',
+            markersize=8,
+            label='Stable Modes'
+        )
+
+        plt.plot(
+            eigenvalues_lti[unstable_idx].real,
+            eigenvalues_lti[unstable_idx].imag,
+            'ro',
+            markersize=8,
+            label='Unstable Modes'
+        )
+
+        plt.grid(True)
+        plt.xlabel('Real')
+        plt.ylabel('Imaginary')
+        plt.title('LTI Eigenvalues')
+        plt.legend()
+        plt.show()
+
+    stabilityReport = {
+        'isStable': isStable,
+        'maxRealPart': maxRealPart,
+        'unstableEigenvalues': unstableEigenvalues,
+        'dampingRatios': dampingRatios,
+        'negativeDampingModes': dampingRatios[negativeDampingModes]
+    }
+
+    return stabilityReport
+
 def plotCampbellDiagram(parameter, freqs_Hz, y_label, save_path=None):
 
     fig, ax = plt.subplots(figsize=(6,4))
