@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="261.19699mm"
+   height="86.638176mm"
+   viewBox="0 0 261.19699 86.638175"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="stablib_logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0771772"
+     inkscape:cx="462.31948"
+     inkscape:cy="135.07527"
+     inkscape:window-width="1920"
+     inkscape:window-height="1111"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(64.028843,-15.661826)">
+    <path
+       style="font-size:14.1111px;font-family:Molot;-inkscape-font-specification:Molot;fill:#5c5c5c;fill-opacity:1;stroke-width:5.25604"
+       d="m -56.735603,59.405822 23.486706,15.575397 v 5.686249 H -64.028843 V 102.3 h 47.097025 c 6.304326,0 10.7544415,-4.45012 10.7544415,-10.754477 V 71.890858 c 0,-6.922392 -1.3597566,-10.754431 -7.2932425,-14.710094 L -36.957325,41.481762 v -3.955665 h 26.577059 L -6.1773765,26.400816 V 15.769998 H -53.150788 c -6.427947,0 -10.878055,4.450108 -10.878055,10.754431 v 18.171297 c 0,6.922401 1.359757,10.630828 7.29324,14.710096 z M 13.724435,37.526097 V 102.3 H 40.795963 V 37.526097 H 53.775452 L 58.101949,26.524429 V 15.769998 H -2.4690209 v 21.756099 z m 145.617755,31.27441 h 10.75443 v 11.866961 h -10.75443 z m 10.75443,-21.632496 h -10.75443 v -9.641914 h 10.75443 z M 186.2901,102.3 c 6.42793,0 10.87805,-4.45012 10.87805,-10.754477 V 69.6658 c 0,-6.427939 -5.1918,-10.507205 -11.12528,-10.507205 v -2.348671 c 5.93348,0 11.12528,-4.079268 11.12528,-10.383593 V 26.524429 c 0,-6.304323 -4.45012,-10.754431 -10.87805,-10.754431 H 132.27068 V 102.3 Z"
+       id="text1"
+       aria-label="STAB"
+       sodipodi:nodetypes="cccccsssccccccssscccccccccccccccccccccsssccsssccs" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:119.137px;font-family:Molot;-inkscape-font-specification:Molot;fill:#e56100;fill-opacity:1;stroke:#e56100;stroke-width:5.06569"
+       x="59.483528"
+       y="103.84038"
+       id="text2"
+       transform="scale(1.0450776,0.95686674)"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:minicomputer;-inkscape-font-specification:minicomputer;fill:#e56100;fill-opacity:1;stroke:#e56100;stroke-width:5.06567"
+         x="59.483528"
+         y="103.84038">λ</tspan></text>
+    <path
+       style="font-size:14.1111px;font-family:Molot;-inkscape-font-specification:Molot;fill:#5c5c5c;fill-opacity:1;stroke-width:5.25604"
+       d="m -56.735603,59.405822 23.486706,15.575397 v 5.686249 H -64.028843 V 102.3 h 47.097025 c 6.304326,0 10.7544415,-4.45012 10.7544415,-10.754477 V 71.890858 c 0,-6.922392 -1.3597566,-10.754431 -7.2932425,-14.710094 L -36.957325,41.481762 v -3.955665 h 26.577059 L -6.1773765,26.400816 V 15.769998 H -53.150788 c -6.427947,0 -10.878055,4.450108 -10.878055,10.754431 v 18.171297 c 0,6.922401 1.359757,10.630828 7.29324,14.710096 z M 13.724435,37.526097 V 102.3 H 40.795963 V 37.526097 H 53.775452 L 58.101949,26.524429 V 15.769998 H -2.4690209 v 21.756099 z m 145.617755,31.27441 h 10.75443 v 11.866961 h -10.75443 z m 10.75443,-21.632496 h -10.75443 v -9.641914 h 10.75443 z M 186.2901,102.3 c 6.42793,0 10.87805,-4.45012 10.87805,-10.754477 V 69.6658 c 0,-6.427939 -5.1918,-10.507205 -11.12528,-10.507205 v -2.348671 c 5.93348,0 11.12528,-4.079268 11.12528,-10.383593 V 26.524429 c 0,-6.304323 -4.45012,-10.754431 -10.87805,-10.754431 H 132.27068 V 102.3 Z"
+       id="path2"
+       aria-label="STAB"
+       sodipodi:nodetypes="cccccsssccccccssscccccccccccccccccccccsssccsssccs" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:119.137px;font-family:Molot;-inkscape-font-specification:Molot;fill:#e56100;fill-opacity:1;stroke:#e56100;stroke-width:5.06569"
+       x="59.483528"
+       y="103.84038"
+       id="text3"
+       transform="scale(1.0450776,0.95686674)"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:minicomputer;-inkscape-font-specification:minicomputer;fill:#e56100;fill-opacity:1;stroke:#e56100;stroke-width:5.06567"
+         x="59.483528"
+         y="103.84038">λ</tspan></text>
+  </g>
+</svg>
