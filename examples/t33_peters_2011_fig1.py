@@ -31,6 +31,9 @@ for i in range(pf.shape[1]//2):
     pf_sum[:,i,:] = pf[:,i,:] + pf[:,pf.shape[1] -1 - i,:]
 
 pf_sum[:,-1,:] = pf[:,pf_sum.shape[1] - 1,:]
+
+# renormalizing to one since peters is measuring participation as a sum of the components he calculates
+pf_sum /= np.sum(pf_sum, axis=1, keepdims=True)
 x = peters_2011.param
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)

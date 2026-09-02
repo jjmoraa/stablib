@@ -29,6 +29,17 @@ def damping(m, imbalance, l, omega, t):
         [-2 * m_imb * l * omega**2 * np.cos(phi_vals[0]), -2 * m * l * omega**2 * np.cos(phi_vals[1]), -2 * m * l * omega**2 * np.cos(phi_vals[2]), 0, 0]
     ])
 
+def viscous_damper(m, imbalance, l, omega, t, c):
+    m_imb = m * (1 + imbalance)
+    phi_vals = phi(omega, t)
+    return np.array([
+            [c[0], 0, 0, 0, 0],
+            [0, c[1], 0, 0, 0],
+            [0, 0, 0, c[2], 0],
+            [-2 * m_imb * l * omega**2 * np.sin(phi_vals[0]), -2 * m * l * omega**2 * np.sin(phi_vals[1]), -2 * m * l * omega**2 * np.sin(phi_vals[2]), c[3], 0],
+            [-2 * m_imb * l * omega**2 * np.cos(phi_vals[0]), -2 * m * l * omega**2 * np.cos(phi_vals[1]), -2 * m * l * omega**2 * np.cos(phi_vals[2]), 0, c[4]]
+        ])
+
 def stiffness(edgNatFreq_rad, m, imbalance, l, kx, ky, omega, t):
     m_imb = m * (1 + imbalance)
     phi_vals = phi(omega, t)

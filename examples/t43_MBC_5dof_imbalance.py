@@ -5,7 +5,7 @@ import numpy as np
 import stablib as stab
 from stablib.floquetParam import floquetParametricRange
 from stablib.models import model5DOFs_mass_imbalance, model5DOFs_mass_imbalance_freq
-from stablib.state_space import mbc
+from stablib.mbc import mbc
 from stablib.floquet import  solve, test_periodic
 
 # --- Define constants
