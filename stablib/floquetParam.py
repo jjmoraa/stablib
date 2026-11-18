@@ -97,6 +97,7 @@ class floquetParametric:
         self.results["ifreq0"] = ifreq0
         self.results["mode_shapes"] = eigenvectors_exp
         self.results["eigenvalues_exp_corrected"] = eigenvalues_exp_corrected
+        self.results["fourier"] = fourier_coefficients
 
 class floquetParametricRange:
     def __init__(self, omegas, A_vector, param = None, param_label=""):
