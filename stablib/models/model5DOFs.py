@@ -46,3 +46,13 @@ def stiffness(edgNatFreq_rad, m, l, kx, ky, omega, t):
         [-m * l * (omega**2) * np.cos(phi_vals[0]), -m * l * (omega**2) * np.cos(phi_vals[1]), -m * l * (omega**2) * np.cos(phi_vals[2]), kx, 0],
         [m * l * (omega**2) * np.sin(phi_vals[0]), m * l * (omega**2) * np.sin(phi_vals[1]), m * l * (omega**2) * np.sin(phi_vals[2]), 0, ky]
     ])
+
+def oscillating_stiffness(k_vect, omega, t):
+    phi_vals = phi(omega, t)
+    return np.array([
+        [k_vect[0] * np.sin(omega * t), 0, 0, 0, 0],
+        [0, k_vect[0] * np.sin(omega * t), 0, 0, 0],
+        [0, 0,k_vect[0] * np.sin(omega * t), 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ])
